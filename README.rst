@@ -84,7 +84,7 @@ It's time to write the code!!!
 Deployment
 ------------
 
-It is possible to deploy to Heroku or to your own server by using Dokku, an open source Heroku clone. 
+It is possible to deploy to Heroku or to your own server by using Dokku, an open source Heroku clone.
 
 Heroku
 ^^^^^^
@@ -113,7 +113,7 @@ Dokku
 ^^^^^
 
 You need to make sure you have a server running Dokku with at least 1GB of RAM. Backing services are
-added just like in Heroku however you must ensure you have the relevant Dokku plugins installed. 
+added just like in Heroku however you must ensure you have the relevant Dokku plugins installed.
 
 .. code-block:: bash
 
