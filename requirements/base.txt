@@ -42,3 +42,4 @@ pytz==2014.10
 django-durationfield==0.5.1
 django-betterforms==1.1.1
 arrow==0.5.0
+django-extensions==1.4.9
