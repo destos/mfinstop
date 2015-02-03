@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Adding that Thing</h2>
+
+{% set forms=form.forms.values() %}
+{% set thing=forms[1] %}
+{% set motive=forms[0] %}
+
+<form id="motive-form" action="." method="POST" class="form-inline">
+    {{ csrf() }}
+
+    {# bunch of BS, re-work when re-imagining this form pleaze #}
+    {% for form in forms %}
+        {% if form.errors %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="alert alert-error">
+                        <strong>{{ field.label }} - {{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors() %}
+                <div class="alert alert-error">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+
+    <h3 class="clearfix">
+        <div class="form-group">
+            I've got to fucking
+            <label class="sr-only" for="{{ thing.behavior.id_for_label }}">Stop or Start</label>
+            {{ thing.behavior|safe }}
+        </div>
+        <div class="form-group col-xs-2">
+            <label class="sr-only" for="{{ thing.verb.id_for_label }}">Verb</label>
+            <div class="input-group">
+                <div class="input-group-addon">verb</div>
+                {{ thing.verb|safe }}
+            </div>
+        </div>
+        <div class="form-group col-xs-3">
+            <label class="sr-only" for="{{ thing.name.id_for_label }}">Thing name</label>
+            <div class="input-group">
+                <div class="input-group-addon">thing</div>
+                {{ thing.name|safe }}
+            </div>
+        </div>
+    </h3>
+
+    <h3 class="clearfix">
+        <div class="form-group">
+            I'll allow myself only
+        </div>
+        <div class="form-group col-xs-1">
+            <label class="sr-only" for="{{ motive.amount.id_for_label }}">Amount</label>
+            {{ motive.amount|safe }}
+        </div>
+        <div class="form-group">
+            time(s) every
+        </div>
+        <div class="form-group col-xs-2">
+            <label class="sr-only" for="{{ motive.duration.id_for_label }}">Duration in days</label>
+            {{ motive.duration|safe }}
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg">Do it</button>
+    </h3>
+
+</form>
+
+{#
+I gota fucking (stop) (eating) (Chinease Food) <br>
+I'll allow myself only (2) times every (30 days)
+#}
+
+{% endblock %}

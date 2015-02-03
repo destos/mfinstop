@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>All your damn Things</h2>
+
+<div id="motive-list" class="list-group">
+{% for motive in motive_list %}
+    <a href="{{ motive.get_detail_url() }}" class="list-group-item">
+        <h4 class="list-group-item-heading">
+            <span>{{ motive.thing.get_behavior_display() }} {{motive.thing.verb}} {{ motive.thing.name }}</span>
+        </h4>
+        <div class="list-group-item-text">
+        {% set period = motive.latest_period %}
+        {% if period %}
+            <p>
+                Current period: {{ period.starts }} - {{ period.ends }}
+            </p>
+            <div class="progress">
+                <div class="progress-bar" style="width: {{ (period.fill_ratio * 100)|int }}%;">{{ period.incidents|length }}/{{ motive.amount }}</div>
+            </div>
+        {% endif %}
+        </div>
+    </a>
+{% else %}
+    <div class="list-group-item">
+        <h4>You don't have any things! <a href="{{ url('things:create_motiv e') }}" class="btn btn-primary">Create a Thing!</a></h4>
+    </div>
+{% endfor %}
+</div>
+{% if motive_list.exists() %}
+    <a href="{{ url('things:create_motive') }}" class="btn btn-primary">Add more Things!</a>
+{% endif %}
+{% endblock %}
