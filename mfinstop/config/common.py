@@ -316,5 +316,4 @@ class Common(Configuration):
 
     # CELERY related config
     BROKER_TRANSPORT = 'redis'
-    BROKER_URL = values.Value("redis://localhost:6379/5", environ_name="REDISCLOUD_URL")
     CELERY_RESULT_BACKEND = values.Value('djcelery.backends.database:DatabaseBackend')

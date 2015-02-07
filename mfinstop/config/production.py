@@ -121,3 +121,6 @@ class Production(Common):
     # END CACHING
 
     # Your production stuff: Below this line define 3rd party library settings
+
+    # CELERY
+    BROKER_URL = values.SecretValue(environ_prefix="", environ_name="REDISCLOUD_URL")

@@ -45,3 +45,4 @@ class Local(Common):
 
     # CELERY
     # CELERY_ALWAYS_EAGER = True
+    BROKER_URL = values.Value("redis://localhost:6379/5")
