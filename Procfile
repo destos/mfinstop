@@ -1,2 +1,2 @@
 web: gunicorn --pythonpath="$PWD/mfinstop" wsgi:application
-worker: celery worker --app=celery_tasks.app
+celery: python manage.py celery worker --app=celery_tasks.app
