@@ -312,3 +312,8 @@ class Common(Configuration):
         cls.DATABASES['default']['ATOMIC_REQUESTS'] = True
 
     # Your common stuff: Below this line define 3rd party library settings
+
+    # CELERY related config
+    BROKER_TRANSPORT = 'redis'
+    BROKER_URL = values.Value("redis://localhost:6379/5", environ_name="REDISCLOUD_URL")
+    CELERY_RESULT_BACKEND = values.Value(environ_name="REDISCLOUD_URL")

@@ -2,7 +2,6 @@
 -r base.txt
 coverage==3.7.1
 Sphinx
-django-extensions==1.4.9
 ipython
 ipdb
 Werkzeug==0.9.6
