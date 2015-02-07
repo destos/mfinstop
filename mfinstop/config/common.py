@@ -315,5 +315,10 @@ class Common(Configuration):
     # Your common stuff: Below this line define 3rd party library settings
 
     # CELERY related config
-    BROKER_TRANSPORT = 'redis'
+    BROKER_TRANSPORT = values.Value('redis')
     CELERY_RESULT_BACKEND = values.Value('djcelery.backends.database:DatabaseBackend')
+    CELERYBEAT_SCHEDULER = values.Value('djcelery.schedulers.DatabaseScheduler')
+    CELERY_SEND_TASK_ERROR_EMAILS = values.BooleanValue(True)
+    CELERY_IMPORTS = (
+        'things.tasks',
+    )
