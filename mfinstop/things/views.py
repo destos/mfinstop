@@ -2,6 +2,7 @@ from braces.views import (
     LoginRequiredMixin, UserFormKwargsMixin, FormMessagesMixin,
     SuccessURLRedirectListMixin)
 from django.views.generic import DetailView, UpdateView, ListView, CreateView
+from django.views.generic.edit import BaseCreateView
 
 from . import forms
 from . import models
@@ -41,6 +42,7 @@ class MotiveCreateView(
 class MotiveListView(
         LoginRequiredMixin,
         ListView):
+
     """
     List all a users motives
     """
@@ -54,16 +56,39 @@ class MotiveListView(
 
 class MotiveIncidentView(
         LoginRequiredMixin,
-        # UserFormKwargsMixin,
+        SuccessURLRedirectListMixin,
         FormMessagesMixin,
-        CreateView):
+        BaseCreateView):
 
     """
-    Log an incident their motive
+    Log an incident to a user's motive,
+    Prevent from creating a new incident if the last one is less than an hour old
     """
 
-    template_name = ''
+    http_method_names = ('post',)
+    success_list_url = 'things:motives_list'
     model = models.Incident
+    form_class = forms.CreateIncidentForm
+
+    def get_thing_sentiment(self):
+        return 'good' if self.object.motive.thing.behavior is models.Thing.GOOD else 'bad'
+
+    def get_form_valid_message(self):
+        messages = {
+            'good': 'Good on ya, keep it up.',
+            'bad': 'Logged, thanks for admitting guilt.'
+        }
+        return messages[self.get_thing_sentiment()]
+
+    def get_form_invalid_message(self):
+        messages = {
+            'good': 'Wasn\'t able log that sorry.',
+            'bad': 'Gona have to wait a bit before you can commit that atrocity again.'
+        }
+        return messages[self.get_thing_sentiment()]
+
+    def form_invalid(self, form):
+        return self.form_valid(form)
 
 
 # View their motive's details and the incidents.

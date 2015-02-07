@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+from allauth.account.forms import LoginForm as AALoginForm
 from django import forms
 
+# from misc.forms import CrispyFormMixin
 from .models import User
 
 
@@ -12,3 +14,10 @@ class UserForm(forms.ModelForm):
 
         # Constrain the UserForm to just these fields.
         fields = ("first_name", "last_name")
+
+
+# Forms for allauth customizations
+# class LoginForm(CrispyFormMixin, AALoginForm):
+#     def __init__(self, *args, **kwargs):
+#         super(LoginForm, self).__init__(*args, **kwargs)()
+#         self.helper.form_tag = False

@@ -2,7 +2,7 @@ from betterforms.multiform import MultiModelForm
 from braces.forms import UserKwargModelFormMixin
 from django import forms
 
-from .models import UserMotive, Thing
+from .models import UserMotive, Thing, Incident
 
 
 class CreateUserMotiveForm(
@@ -89,3 +89,9 @@ class CreateThingAndUserMotiveForm(MultiModelForm):
             objects['motive'].thing = objects['thing']
             objects['motive'].save()
         return objects
+
+
+class CreateIncidentForm(forms.ModelForm):
+    class Meta:
+        model = Incident
+        fields = ('motive',)
