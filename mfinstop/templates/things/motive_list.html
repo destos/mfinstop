@@ -6,22 +6,37 @@
 
 <div id="motive-list" class="list-group">
 {% for motive in motive_list %}
-    <a href="{{ motive.get_detail_url() }}" class="list-group-item">
-        <h4 class="list-group-item-heading">
-            <span>{{ motive.thing.get_behavior_display() }} {{motive.thing.verb}} {{ motive.thing.name }}</span>
-        </h4>
-        <div class="list-group-item-text">
-        {% set period = motive.latest_period %}
-        {% if period %}
-            <p>
-                Current period: {{ period.starts }} - {{ period.ends }}
-            </p>
-            <div class="progress">
-                <div class="progress-bar" style="width: {{ (period.fill_ratio * 100)|int }}%;">{{ period.incidents|length }}/{{ motive.amount }}</div>
+    {% set period = motive.latest_period %}
+    <div class="list-group-item clearfix">
+        <div class="clearfix">
+            <div class="pull-left">
+                <h4 class="list-group-item-heading">
+                    <a href="{{ motive.get_detail_url() }}">
+                        <span>{{ motive.thing.get_behavior_display() }} {{motive.thing.verb}} {{ motive.thing.name }}</span>
+                    </a>
+                </h4>
+                {% if period %}
+                <div class="list-group-item-text">
+                    <p>Current period: {{ period.starts }} - {{ period.ends }}</p>
+                    {# TOOD: diff of days to go, humanize the time #}
+                </div>
+                {% endif %}
             </div>
-        {% endif %}
+            <div class="pull-right">
+                <form action="{{ url('things:motive_incident') }}" action="post">
+                    <input type="hidden" name="motive" value="{{ motive.pk }}"/>
+                    <button type="submit" class="btn btn-default">I just did this.</button>
+                </form>
+            </div>
         </div>
-    </a>
+    {% if period and not period.past_today %}
+        <div class="progress">
+            {% for bar in period.progress_bars %}
+                <div class="progress-bar progress-bar-{{ bar.type }}" style="width: {{ bar.percent }}%;">{{ bar.text|default('') }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    </div>
 {% else %}
     <div class="list-group-item">
         <h4>You don't have any things! <a href="{{ url('things:create_motive') }}" class="btn btn-primary">Create a Thing!</a></h4>
