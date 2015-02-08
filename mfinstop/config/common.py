@@ -46,6 +46,7 @@ class Common(Configuration):
         'jingo',  # templates
         # 'lib.l10n_utils',
         'djcelery',
+        'djrill',
     )
 
     # Authentication services
