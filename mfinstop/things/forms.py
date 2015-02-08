@@ -51,9 +51,8 @@ class ThingForm(
     }))
 
     def __init__(self, *args, **kwargs):
-        ret = super(ThingForm, self).__init__(*args, **kwargs)
+        super(ThingForm, self).__init__(*args, **kwargs)
         self.fields['behavior'].widget.attrs = {'class': 'form-control input-lg'}
-        return ret
 
     class Meta:
         model = Thing
@@ -92,6 +91,17 @@ class CreateThingAndUserMotiveForm(MultiModelForm):
 
 
 class CreateIncidentForm(forms.ModelForm):
+    """Not what a form is for but okay... :/"""
+    def __init__(self, *args, **kwargs):
+        self.motive = kwargs.pop('motive')
+        super(CreateIncidentForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        incident = self._meta.model.objects.create(**{'motive': self.motive})
+        if commit:
+            incident.save()
+        return incident
+
     class Meta:
         model = Incident
         fields = ('motive',)

@@ -1,12 +1,13 @@
 from braces.views import (
     LoginRequiredMixin, UserFormKwargsMixin, FormMessagesMixin,
-    SuccessURLRedirectListMixin)
+    SuccessURLRedirectListMixin, UserPassesTestMixin)
 from django.views.generic import DetailView, UpdateView, ListView, CreateView
 from django.views.generic.edit import BaseCreateView
 
 from . import forms
 from . import models
 from . import utils
+from . import mixins
 
 
 # A view where users can create their motives
@@ -35,9 +36,9 @@ class MotiveCreateView(
         return response
 
 
-# Edit their motives
+# TODO: Edit their motives
 
-# Delete their motives
+# TODO?: Delete their motives
 
 class MotiveListView(
         LoginRequiredMixin,
@@ -55,7 +56,9 @@ class MotiveListView(
 
 
 class MotiveIncidentView(
-        LoginRequiredMixin,
+        mixins.UserMotiveMixin,
+        mixins.UserMotiveFormKwargsMixin,
+        mixins.UserMotiveAccess,
         SuccessURLRedirectListMixin,
         FormMessagesMixin,
         BaseCreateView):
@@ -68,6 +71,7 @@ class MotiveIncidentView(
     http_method_names = ('post',)
     success_list_url = 'things:motives_list'
     model = models.Incident
+    motive_pk_url_kwarg = 'motive_pk'
     form_class = forms.CreateIncidentForm
 
     def get_thing_sentiment(self):

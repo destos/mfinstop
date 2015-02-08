@@ -23,9 +23,8 @@
                 {% endif %}
             </div>
             <div class="pull-right">
-                <form action="{{ url('things:motive_incident') }}" method="post">
+                <form action="{{ url('things:motive_incident', motive.pk) }}" method="post">
                     {{ csrf() }}
-                    <input type="hidden" name="motive" value="{{ motive.pk }}"/>
                     <button type="submit" class="btn btn-default">I just did this.</button>
                 </form>
             </div>
