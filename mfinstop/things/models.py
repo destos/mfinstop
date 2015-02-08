@@ -181,13 +181,22 @@ class MotivePeriod(models.Model):
             })
 
         if bool(over_incidents):
+            over_bar = make_percent(over_incidents)
             # incidents that pass the max_incidents
-            bars.append({
-                'name': 'bad_incidents',
-                'type': 'danger',
-                'percent': make_percent(over_incidents),
-                'text': "{} over!".format(over_incidents)
-            })
+            if self.motive.thing.behavior == Thing.GOOD:
+                bars.append({
+                    'name': 'good_incidents_over',
+                    'type': 'success',
+                    'percent': over_bar,
+                    'text': "{} more!".format(over_incidents)
+                })
+            else:
+                bars.append({
+                    'name': 'bad_incidents',
+                    'type': 'danger',
+                    'percent': over_bar,
+                    'text': "{} over!".format(over_incidents)
+                })
 
         return bars
 
