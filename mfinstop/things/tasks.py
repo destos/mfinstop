@@ -2,7 +2,6 @@ import arrow
 from celery.utils.log import get_task_logger
 from django.core.mail import EmailMultiAlternatives
 from jingo import get_env
-from allauth.account.models import EmailAddress
 
 from celery_tasks import app
 from users.models import User
@@ -137,13 +136,7 @@ class SendSummaryEmail(EmailTask):
             return meta
 
     def get_recipients(self, **context):
-        # TODO: turn into manager method?
-        user = context.get('user')
-        try:
-            email = user.emailaddress_set.get(primary=True).email
-        except EmailAddress.DoesNotExist:
-            email = user.email
-        return [email]
+        return [context.get('user').email_to_header]
 
     def run(self, user, force=False):
         if force is True or user.motives and not user.quitter:
