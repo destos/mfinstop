@@ -139,5 +139,5 @@ class SendSummaryEmail(EmailTask):
         return [context.get('user').email_to_header]
 
     def run(self, user, force=False):
-        if force is True or user.motives and not user.quitter:
+        if force is True or (user.motives and not user.quitter):
             self.send_email({'user': user})
