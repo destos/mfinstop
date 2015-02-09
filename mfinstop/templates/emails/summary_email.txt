@@ -1,0 +1,3 @@
+{% for motive in user.motives.all() %}
+    {{motive}}
+{% endfor %}

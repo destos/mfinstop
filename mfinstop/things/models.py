@@ -51,7 +51,7 @@ class UserMotive(TimeStampedModel):
     You can't quit individual motives, a user must deactivate their account
     by becoming a quitter.
     """
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, related_name='motives')
     thing = models.ForeignKey(Thing)
     # The goal amount to limit by or reach depending on if this is a good/bad thing
     amount = models.PositiveSmallIntegerField(default=1)
