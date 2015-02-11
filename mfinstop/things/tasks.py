@@ -31,13 +31,13 @@ class CheckEndingPeriods(
     """
 
     def run(self):
-        now = arrow.utcnow().ceil('days')
+        now = arrow.utcnow().ceil('day')
         motives = self.get_active_motives().filter(
             periods__ends__range=(
-                now.date(), now.floor('days').date()))
+                now.date(), now.floor('day').date()))
         for motive in motives:
             # calculate time till task needs run.
-            morning = now.floor('days').replace(minute=+10)
+            morning = now.floor('day').replace(minute=+10)
             CreateMotivePeriod().apply_async(motive, eta=morning.datetime)
         return motives
 
