@@ -50,3 +50,14 @@
 #motive-list .progress{
   margin-bottom: 0;
 }
+
+.progress-indicators {
+  margin-top: 5px;
+}
+
+.progress-indicators .progress-bar-indicator{
+  float: left;
+  border-left: 1px solid #888;
+  padding: 5px 10px;
+  line-height: 1em;
+}

@@ -12,6 +12,11 @@ class ThingAdmin(admin.ModelAdmin):
 class InlineMotivePeriod(admin.TabularInline):
     model = models.MotivePeriod
     extra = 0
+    readonly_fields = ('starts', 'ends', 'num_incidents',)
+    can_delete = False
+
+    def num_incidents(self, object):
+        return len(object.incidents)
 
 
 class UserMotiveAdmin(admin.ModelAdmin):

@@ -12,12 +12,13 @@
             <div class="pull-left">
                 <h4 class="list-group-item-heading">
                     <a href="{{ motive.get_detail_url() }}">
-                        <span>{{ motive.thing.get_behavior_display() }} {{motive.thing.verb}} {{ motive.thing.name }}</span>
+                        <span>You're trying to {{ motive.thing.get_behavior_display() }} {{motive.thing.verb}} {{ motive.thing.name }}</span>
                     </a>
                 </h4>
                 {% if period %}
                 <div class="list-group-item-text">
-                    <p>Current period: {{ period.starts }} - {{ period.ends }}</p>
+                    {# TODO: change verbiage based on behavior #}
+                    <p>Over the next {{ period.days_left }} days you can do this {{ period.incidents_left}} times.</p>
                     {# TOOD: diff of days to go, humanize the time #}
                 </div>
                 {% endif %}
@@ -30,9 +31,16 @@
             </div>
         </div>
     {% if period and not period.past_today %}
+        {% set progress_bars = period.progress_bars %}
+        {{ proger}}
         <div class="progress">
-            {% for bar in period.progress_bars %}
+            {% for bar in progress_bars %}
                 <div class="progress-bar progress-bar-{{ bar.type }}" style="width: {{ bar.percent }}%;">{{ bar.text|default('') }}</div>
+            {% endfor %}
+        </div>
+        <div class="progress-indicators">
+            {% for bar in progress_bars %}
+                <div class="progress-bar-indicator" style="width: {{ bar.percent }}%;">{{ bar.indi|default('&nbsp;')|safe }}</div>
             {% endfor %}
         </div>
     {% endif %}

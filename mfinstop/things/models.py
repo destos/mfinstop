@@ -89,7 +89,7 @@ class MotivePeriod(models.Model):
     objects = MotivePeriodQuerySet.as_manager()
 
     def __unicode__(self):
-        return self.days_left
+        return "{} days left, {} incidents".format(self.days_left, len(self.incidents))
 
     @property
     def incidents(self):
@@ -105,6 +105,10 @@ class MotivePeriod(models.Model):
         if incidents:
             return float(len(incidents)) / float(self.motive.amount)
         return float(0)
+
+    @property
+    def incidents_left(self):
+        return max(self.motive.amount - len(self.incidents), 0)
 
     @property
     def length(self):
@@ -136,68 +140,88 @@ class MotivePeriod(models.Model):
         If the total moves past the day percent it turns the warning colors,
         if it moves past the motive amount limit it turns the danger color.
         """
-        incidents = self.incidents
-        max_incidents = self.motive.amount
-        current_incidents = len(incidents)
         total_days = self.length
         days_past = self.days_past
+        incident_day_ratio = float(total_days) / float(self.motive.amount)
+        max_incidents = float(self.motive.amount) * incident_day_ratio
+
+        incidents = self.incidents
+        incidents_amount = len(incidents)
+        current_incidents = incidents_amount * incident_day_ratio
+
+        # TODO: indicator for open days shows how many days left
+
         # Determine the highest increment
         if current_incidents > total_days:
             # If the incidents are already more than days that can pass we wont
             # be showing any days
             max_amount = current_incidents
         else:
-            max_amount = total_days
+            max_amount = float(total_days)
 
         bars = []
 
         def make_percent(amount=0):
-            return (float(amount) / float(max_amount)) * 100
+            return (float(amount) / max_amount) * 100
 
         good_band = min(current_incidents, days_past)
         bars.append({
             # Incidents that haven't past the days_past amount
             'name': 'good_incidents',
             'type': 'primary',
-            'percent': make_percent(good_band)
+            'percent': make_percent(good_band),
+            'indi': 'within bounds',
         })
 
-        warning_band = 0
         over_incidents = max(current_incidents - max_incidents, 0)
         if current_incidents > days_past:
             # incidents that occur past the date percent, (going on a negative incident rate)
-            warning_band = (current_incidents - good_band - over_incidents)
             bars.append({
                 'name': 'warning_incidents',
                 'type': 'warning',
-                'percent': make_percent(warning_band)
+                'percent': make_percent(min(current_incidents, total_days)),
+                'indi': 'over safe zone',
             })
 
         elif current_incidents < days_past:
             bars.append({
                 'name': 'days_past',
                 'type': 'info',
-                'percent': make_percent(days_past - (current_incidents))
+                'percent': make_percent(days_past),
+                'indi': 'safe zone'
             })
 
         if bool(over_incidents):
-            over_bar = make_percent(over_incidents)
+            over_bar = make_percent(current_incidents)
             # incidents that pass the max_incidents
+            over_by = incidents_amount - self.motive.amount
             if self.motive.thing.behavior == Thing.GOOD:
                 bars.append({
                     'name': 'good_incidents_over',
                     'type': 'success',
                     'percent': over_bar,
-                    'text': "{} more!".format(over_incidents)
+                    'text': "{} more!".format(over_by),
+                    'indi': "over limit, but good."
                 })
             else:
                 bars.append({
                     'name': 'bad_incidents',
                     'type': 'danger',
                     'percent': over_bar,
-                    'text': "{} over!".format(over_incidents)
+                    'text': "{} over!".format(over_by),
+                    'indi': 'over limit, tsk tsk!'
                 })
 
+        returned_bars = []
+        for i, bar in enumerate(bars):
+            right = i - len(bars)
+            previous_bars = list(bars)[:right]
+            prev_percents = sum([pbar['percent'] for pbar in previous_bars])
+            # remove previous bar space from this bar
+            bar['percent'] -= prev_percents
+            if bar['percent'] <= 0:
+                continue
+            returned_bars.append(bar)
         return bars
 
     class Meta:
