@@ -204,13 +204,9 @@ class Common(Configuration):
     JINJA_CONFIG = {
         'extensions': [
             'jinja2.ext.i18n',
-            # DUno
-            # 'lib.l10n_utils.template.i18n',
             'jinja2.ext.do',
             'jinja2.ext.with_',
             'jinja2.ext.loopcontrols',
-            # 'lib.l10n_utils.template.l10n_blocks',
-            # 'lib.l10n_utils.template.lang_blocks',
             # 'jingo_markdown.extensions.MarkdownExtension',
         ],
         'autoescape': True,

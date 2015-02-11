@@ -18,9 +18,12 @@
                 {% if period %}
                 <div class="list-group-item-text">
                     {# change verbiage based on behavior #}
+                    {% macro period_ends() %}
+                        The current period ends in {{ period.days_left }} {{ ngettext('day', ' days', period.days_left) }}
+                    {% endmacro %}
                     {% if motive.thing.is_negative %}
                         {# Negative Thing #}
-                        <p>Limit yourself to only <strong>{{ motive.thing.verb }} {{ motive.amount }}</strong> every <strong>{{ period.length }} days.</strong></p>
+                        <p>Limit yourself to only <strong>{{ motive.thing.verb }} {{ motive.amount }}</strong> every <strong>{{ period.length }} days.</strong> {{ period_ends() }}</p>
                         {% if period.over_incidents %}
                             <p>Well looks like you've gone over your limit, What ever are we going to do with you?</p>
                         {% elif period.incidents_left == 0 %}
@@ -30,7 +33,7 @@
                         {% endif %}
                     {% else %}
                         {# Positive Thing #}
-                        <p>Do more <strong>{{ motive.thing.verb }}</strong>, by doing it at least <strong>{{ motive.amount }} times</strong> every <strong>{{ period.length }} days.</strong></p>
+                        <p>Do more <strong>{{ motive.thing.verb }}</strong>, by doing it at least <strong>{{ motive.amount }} times</strong> every <strong>{{ period.length }} days.</strong> {{ period_ends() }}</p>
                         {% if period.over_incidents %}
                             <p>Looks like you're doing a good job! Keep it up!</p>
                         {% elif period.incidents_left == 0 %}
