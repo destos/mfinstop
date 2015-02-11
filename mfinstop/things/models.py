@@ -44,6 +44,10 @@ class Thing(TimeStampedModel):
     def __unicode__(self):
         return "{} {} {}".format(self.get_behavior_display(), self.verb, self.name)
 
+    @property
+    def is_negative(self):
+        return self.behavior is self.BAD
+
 
 class UserMotive(TimeStampedModel):
     """
@@ -100,36 +104,40 @@ class MotivePeriod(models.Model):
             created__range=(self.starts, self.ends))
 
     @property
-    def fill_ratio(self):
-        incidents = self.incidents
-        if incidents:
-            return float(len(incidents)) / float(self.motive.amount)
-        return float(0)
+    def over_incidents(self):
+        """How many incidents are we over in this period"""
+        return len(self.incidents) > self.motive.amount
 
     @property
     def incidents_left(self):
+        """Incidents left allowed in this period"""
         return max(self.motive.amount - len(self.incidents), 0)
 
     @property
     def length(self):
+        """Total amount of days in this period"""
         return (self.ends - self.starts).days
 
     @property
     def days_left(self):
+        """Integer of how many days are left"""
         present = arrow.utcnow()
         return (arrow.get(self.ends) - present).days
 
     @property
     def days_left_display(self):
+        """How many days left humanized"""
         return arrow.get(self.ends).humanize()
 
     @property
     def past_today(self):
+        """Check if the period has past"""
         present = arrow.utcnow()
         return present.date() > self.ends
 
     @property
     def days_past(self):
+        """How many days have past so far in this period"""
         return self.length - self.days_left
 
     @property
@@ -165,23 +173,34 @@ class MotivePeriod(models.Model):
             return (float(amount) / max_amount) * 100
 
         good_band = min(current_incidents, days_past)
-        bars.append({
-            # Incidents that haven't past the days_past amount
-            'name': 'good_incidents',
-            'type': 'primary',
-            'percent': make_percent(good_band),
-            'indi': 'within bounds',
-        })
+        if good_band > 0:
+            bars.append({
+                # Incidents that haven't past the days_past amount
+                'name': 'good_incidents',
+                'type': 'primary',
+                'percent': make_percent(good_band),
+                'indi': 'within bounds',
+            })
 
         over_incidents = max(current_incidents - max_incidents, 0)
         if current_incidents > days_past:
             # incidents that occur past the date percent, (going on a negative incident rate)
-            bars.append({
-                'name': 'warning_incidents',
-                'type': 'warning',
-                'percent': make_percent(min(current_incidents, total_days)),
-                'indi': 'over safe zone',
-            })
+            close_bar = min(current_incidents, total_days)
+            # Make info bar for good things
+            if self.motive.thing.is_negative:
+                bars.append({
+                    'name': 'warning_incidents',
+                    'type': 'warning',
+                    'percent': make_percent(close_bar),
+                    'indi': 'over safe zone',
+                })
+            else:
+                bars.append({
+                    'name': 'warning_incidents',
+                    'type': 'info',
+                    'percent': make_percent(close_bar),
+                    'indi': 'good on ya',
+                })
 
         elif current_incidents < days_past:
             bars.append({
@@ -195,13 +214,13 @@ class MotivePeriod(models.Model):
             over_bar = make_percent(current_incidents)
             # incidents that pass the max_incidents
             over_by = incidents_amount - self.motive.amount
-            if self.motive.thing.behavior == Thing.GOOD:
+            if not self.motive.thing.is_negative:
                 bars.append({
                     'name': 'good_incidents_over',
                     'type': 'success',
                     'percent': over_bar,
                     'text': "{} more!".format(over_by),
-                    'indi': "over limit, but good."
+                    'indi': "over goal!"
                 })
             else:
                 bars.append({
