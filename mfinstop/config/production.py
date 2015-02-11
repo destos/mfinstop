@@ -93,7 +93,7 @@ class Production(Common):
     MANDRILL_API_KEY = values.SecretValue(environ_name='MANDRILL_APIKEY')
     EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
     # EMAIL_USE_TLS = True
-    # SERVER_EMAIL = EMAIL_HOST_USER
+    SERVER_EMAIL = DEFAULT_FROM_EMAIL
     # END EMAIL
 
     # TEMPLATE CONFIGURATION
