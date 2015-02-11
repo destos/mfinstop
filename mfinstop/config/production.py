@@ -90,7 +90,7 @@ class Production(Common):
     # EMAIL
     DEFAULT_FROM_EMAIL = values.Value('mfinstop <noreply@mfinstop.com>')
     EMAIL_SUBJECT_PREFIX = values.Value('[mfinstop] ', environ_name="EMAIL_SUBJECT_PREFIX")
-    MANDRILL_API_KEY = values.SecretValue()
+    MANDRILL_API_KEY = values.SecretValue(environ_name='MANDRILL_APIKEY')
     EMAIL_BACKEND = values.Value("djrill.mail.backends.djrill.DjrillBackend")
     # EMAIL_USE_TLS = True
     SERVER_EMAIL = DEFAULT_FROM_EMAIL
