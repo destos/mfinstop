@@ -10,7 +10,7 @@ dj-database-url==0.3.0
 # Forms
 django-braces==1.4.0
 # django-crispy-forms==1.4.0
-git+http://github.com/maraujop/django-crispy-forms.git@dev
+git+http://github.com/maraujop/django-crispy-forms.git@e31e39561c10b01be3693914aad1aa79350f5647
 django-floppyforms==1.3.0
 
 # Models
