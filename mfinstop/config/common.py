@@ -189,7 +189,7 @@ class Common(Configuration):
     )
 
     # JINGO CONFIGURATION
-    JINGO_INCLUDE_PATTERN = r'\.html'
+    JINGO_INCLUDE_PATTERN = r'(\.jinja|\.html)'
 
     JINGO_EXCLUDE_APPS = (
         'debug_toolbar',
@@ -218,6 +218,7 @@ class Common(Configuration):
 
     # See: http://django-crispy-forms.readthedocs.org/en/latest/install.html#template-packs
     CRISPY_TEMPLATE_PACK = 'bootstrap3'
+    CRISPY_ALLOWED_TEMPLATE_PACKS = ('bootstrap3',)
     # END TEMPLATE CONFIGURATION
 
     # STATIC FILE CONFIGURATION
@@ -314,6 +315,9 @@ class Common(Configuration):
         cls.DATABASES['default']['ATOMIC_REQUESTS'] = True
 
     # Your common stuff: Below this line define 3rd party library settings
+    ACCOUNT_FORMS = {
+        'login': 'users.forms.LoginForm'
+    }
 
     # CELERY related config
     BROKER_TRANSPORT = values.Value('redis')

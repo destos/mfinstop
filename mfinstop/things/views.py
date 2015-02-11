@@ -55,6 +55,8 @@ class MotiveListView(
         return models.UserMotive.objects.filter(user=self.request.user)
 
 
+# TODO: put in a limiter that only allows an incident to be posted every hour.
+# notify the user that the incident wasn't increased.
 class MotiveIncidentView(
         mixins.UserMotiveMixin,
         mixins.UserMotiveFormKwargsMixin,

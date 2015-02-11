@@ -48,7 +48,8 @@
 
       <form method="post" action="." class="add_email">
           {{ csrf() }}
-          {{ crispy(form) }}
+          {# {{ crispy(form) }} #}
+          {{ form.as_p() }}
           <button class="btn" name="action_add" type="submit">{{ _("Add E-mail") }}</button>
       </form>
     </div>

@@ -10,7 +10,8 @@
             <h1>{% block header %}User: {{ user.username }}{% endblock %}</h1>
             <form class="form-horizontal" method="post" action="{{ url('users:update') }}">
                 {{ csrf() }}
-                {{ crispy(form) }}
+                {{ form.as_p() }}
+                {# {{ crispy(form) }} #}
                 <div class="control-group">
                   <div class="controls">
                     <button type="submit" class="btn">Update</button>

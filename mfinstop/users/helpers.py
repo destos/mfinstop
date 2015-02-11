@@ -4,6 +4,7 @@ from avatar.util import (
     get_default_avatar_url, cache_result, get_user_model, get_user)
 from avatar.templatetags.avatar_tags import avatar_url
 from avatar.conf import settings as avatar_settings
+# from crispy_forms.helper import FormHelper
 from django.template import Template, Context
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.utils.translation import ugettext as _
@@ -21,17 +22,15 @@ def static(path):
 
 @register.function
 @jinja2.contextfunction
-def crispy(context, form, helper=None, template_pack='bootstrap', **kwargs):
-    mini_template = (
-        '{{% load crispy_forms_tags %}}{{% crispy form "{0}" %}}'.format(template_pack))
-    t = Template(mini_template)
+def crispy(context, form):
+    # loader.get_template('users/crispy.html')
+    t = Template("{% load crispy_forms_tags %}{% crispy form %}")
     context = Context(dict(context))
     context.update({'form': form})
     return t.render(context)
 
 
 # Avatar template tag converted to use Jinja
-
 @cache_result()
 @register.function
 def user_avatar(user, size=avatar_settings.AVATAR_DEFAULT_SIZE, **kwargs):

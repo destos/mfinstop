@@ -1,0 +1,5 @@
+<div{% if formactions.attrs %} {{ formactions.flat_attrs|safe }}{% endif %} class="form-group">
+    <div class="col-sm-offset-{{ label_col }} col-sm-{{ field_col }}">
+        {{ fields_output|safe }}
+    </div>
+</div>
