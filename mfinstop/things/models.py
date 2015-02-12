@@ -101,7 +101,10 @@ class MotivePeriod(models.Model):
         Get a filterd range of incidents that occured in this motive period
         """
         return self.motive.incidents.filter(
-            created__range=(self.starts, self.ends))
+            created__range=(
+                arrow.get(self.starts).datetime,
+                # compensate for missing enddate
+                arrow.get(self.ends).replace(days=+1).floor('day').datetime))
 
     @property
     def over_incidents(self):
