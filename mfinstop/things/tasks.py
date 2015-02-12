@@ -1,6 +1,8 @@
 import arrow
 from celery.utils.log import get_task_logger
 from django.core.mail import EmailMultiAlternatives
+from django.contrib.sites.models import Site
+from django.core.exceptions import ImproperlyConfigured
 from jingo import get_env
 
 from celery_tasks import app
@@ -66,6 +68,15 @@ class SendDailyEmails(
             SendSummaryEmail().delay(user)
 
 
+class CheckForEmptyMotives(app.Task):
+    """
+    Check for users that have not created any motives and send them an introductory email.
+    make sure now to spam the user, so log that the email was sent and only send it
+    every month?
+    """
+    pass
+
+
 class EmailTask(app.Task):
     """
     """
@@ -75,7 +86,9 @@ class EmailTask(app.Task):
     email_subject = 'change me'
 
     def get_email_context(self, **extra_context):
-        context = {}
+        context = {
+            'site': self.get_site()
+        }
         context.update(extra_context)
         return context
 
@@ -117,6 +130,11 @@ class EmailTask(app.Task):
     def get_tags(self, **context):
         return []
 
+    def get_site(self):
+        if Site._meta.installed:
+            return Site.objects.get_current()
+        raise ImproperlyConfigured('Site needs defined for email template links')
+
 
 class SendSummaryEmail(EmailTask):
     """
@@ -124,7 +142,7 @@ class SendSummaryEmail(EmailTask):
     """
 
     email_template = 'emails/summary_email'
-    email_subject = 'give us updates'
+    email_subject = 'What have you been up to?'
 
     def get_metadata(self, **context):
         meta = super(SendSummaryEmail, self).get_metadata()
@@ -139,5 +157,17 @@ class SendSummaryEmail(EmailTask):
         return [context.get('user').email_to_header]
 
     def run(self, user, force=False):
-        if force is True or (user.motives and not user.quitter):
-            self.send_email({'user': user})
+        motives = user.motives.all()
+        if force is True or (motives and not user.quitter):
+            pos_motives = motives.good_motives()
+            neg_motives = motives.good_motives()
+            context = {
+                'user': user,
+                'motives': motives,
+                'has_positive_motive': bool(pos_motives),
+                'has_negative_motive': bool(neg_motives),
+                'positive_motives': pos_motives,
+                'negative_motives': neg_motives,
+                'num_motives': len(motives),
+            }
+            self.send_email(context)

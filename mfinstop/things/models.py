@@ -5,7 +5,7 @@ from django_extensions.db.fields import AutoSlugField
 from durationfield.db.models.fields.duration import DurationField
 
 from users.models import User
-from .querysets import ThingQueryset, MotivePeriodQuerySet
+from .querysets import ThingQueryset, MotivePeriodQuerySet, UserMotiveQuerySet
 
 
 class Thing(TimeStampedModel):
@@ -61,6 +61,8 @@ class UserMotive(TimeStampedModel):
     amount = models.PositiveSmallIntegerField(default=1)
     duration = DurationField()
 
+    objects = UserMotiveQuerySet.as_manager()
+
     class Meta:
         unique_together = ('user', 'thing')
 
@@ -70,6 +72,10 @@ class UserMotive(TimeStampedModel):
     @models.permalink
     def get_detail_url(self):
         return ('things:motive_detail', (), {'motive_pk': self.pk})
+
+    @models.permalink
+    def get_log_incident_url(self):
+        return ('things:motive_incident', (), {'motive_pk': self.pk})
 
     @property
     def latest_period(self):

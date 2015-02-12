@@ -1,3 +1,4 @@
+{% from 'things/macros/motives.jinja' import motive_header, period_ends %}
 {% extends "base.html" %}
 
 {% block content %}
@@ -12,18 +13,15 @@
             <div class="pull-left">
                 <h4 class="list-group-item-heading">
                     <a href="{{ motive.get_detail_url() }}">
-                        <span>You're trying to {{ motive.thing.get_behavior_display() }} {{motive.thing.verb}} {{ motive.thing.name }}</span>
+                        <span>{{ motive_header(motive) }}</span>
                     </a>
                 </h4>
                 {% if period %}
                 <div class="list-group-item-text">
                     {# change verbiage based on behavior #}
-                    {% macro period_ends() %}
-                        The current period ends in {{ period.days_left }} {{ ngettext('day', ' days', period.days_left) }}
-                    {% endmacro %}
                     {% if motive.thing.is_negative %}
                         {# Negative Thing #}
-                        <p>Limit yourself to only <strong>{{ motive.thing.verb }} {{ motive.amount }}</strong> every <strong>{{ period.length }} days.</strong> {{ period_ends() }}</p>
+                        <p>Limit yourself to only <strong>{{ motive.thing.verb }} {{ motive.amount }}</strong> every <strong>{{ period.length }} days.</strong> {{ period_ends(period) }}</p>
                         {% if period.over_incidents %}
                             <p>Well, looks like you've gone over your limit, What ever are we going to do with you?</p>
                         {% elif period.incidents_left == 0 %}
@@ -33,7 +31,7 @@
                         {% endif %}
                     {% else %}
                         {# Positive Thing #}
-                        <p>Do more <strong>{{ motive.thing.verb }}</strong>, by doing it at least <strong>{{ motive.amount }} times</strong> every <strong>{{ period.length }} days.</strong> {{ period_ends() }}</p>
+                        <p>Do more <strong>{{ motive.thing.verb }}</strong>, by doing it at least <strong>{{ motive.amount }} times</strong> every <strong>{{ period.length }} days.</strong> {{ period_ends(period) }}</p>
                         {% if period.over_incidents %}
                             <p>Looks like you're doing a good job! Keep it up!</p>
                         {% elif period.incidents_left == 0 %}
@@ -63,7 +61,7 @@
         </div>
         <div class="progress-indicators">
             {% for bar in progress_bars %}
-                <div class="progress-bar-indicator" style="width: {{ bar.percent }}%;">{{ bar.indi|default('&nbsp;')|safe }}</div>
+                <div class="progress-bar-indicator" style="width: {{ bar.percent }}%;" title="{{ bar.indi }}">{{ bar.indi|default('&nbsp;')|safe }}</div>
             {% endfor %}
         </div>
     {% endif %}

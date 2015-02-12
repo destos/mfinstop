@@ -15,3 +15,14 @@ class ThingQueryset(QuerySet):
 
 class MotivePeriodQuerySet(QuerySet):
     pass
+
+
+class UserMotiveQuerySet(QuerySet):
+
+    def good_motives(self):
+        from .models import Thing
+        return self.filter(thing__behavior=Thing.GOOD)
+
+    def bad_motives(self):
+        from .models import Thing
+        return self.filter(thing__behavior=Thing.BAD)

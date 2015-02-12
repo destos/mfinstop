@@ -1,3 +1,35 @@
-{% for motive in user.motives.all() %}
-    <p>{{motive}}</p>
+{% from 'things/macros/motives.jinja' import motive_header, period_ends  %}
+
+{# The summary email gives the user an overview of what goals they're working on and any progress/incidents that have logged #}
+
+<h2>Hey {{ user.first_name|default(user) }},</h2>
+
+<p>
+    This is a reminder email that contains certain things you wish to
+    {%- if has_positive_motive %} start {% endif -%}
+    {% if has_postive_motive and has_negative_motive %}or{% endif -%}
+    {%- if has_negative_motive %} stop {% endif -%} doing.
+</p>
+<p>Please let us know if you did any of these things today by clicking the links below them.</p>
+
+{% if num_motives > 1 %}
+<h3>Here are all the things you're working on:</h3>
+{% else %}
+<h3>Here's that one thing you're working on:</h3>
+{# potential upsell location #}
+{% endif %}
+
+{% for motive in motives %}
+    {% set period = motive.latest_period %}
+    <h4>{{ motive_header(motive) }}</h4>
+    {# TODO: create a unique link per email and only allow it to apply to one incident creation?
+    To prevent users from spamming an email link if they want to report an incident. Not sure.#}
+    <a href="http://{{ site.domain }}{{ motive.get_log_incident_url() }}">I did this today.</a>
+    {% if period %}
+        {% if motive.thing.is_negative %}
+            <p>Limit yourself to only <strong>{{ motive.thing.verb }} {{ motive.amount }}</strong> every <strong>{{ period.length }} days.</strong> {{ period_ends(period) }}</p>
+        {% else %}
+            <p>Do more <strong>{{ motive.thing.verb }}</strong>, by doing it at least <strong>{{ motive.amount }} times</strong> every <strong>{{ period.length }} days.</strong> {{ period_ends(period) }}</p>
+        {% endif %}
+    {% endif %}
 {% endfor %}

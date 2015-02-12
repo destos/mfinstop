@@ -73,11 +73,14 @@ class MotiveIncidentView(
     Prevent from creating a new incident if the last one is less than an hour old
     """
 
-    http_method_names = ('post',)
+    http_method_names = ('post', 'get',)
     success_list_url = 'things:motives_list'
     model = models.Incident
     motive_pk_url_kwarg = 'motive_pk'
     form_class = forms.CreateIncidentForm
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         if waffle.flag_is_active(request, 'limit_incident_logging_hourly'):
