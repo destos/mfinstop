@@ -1,8 +1,11 @@
+import arrow
 from braces.views import (
     LoginRequiredMixin, UserFormKwargsMixin, FormMessagesMixin,
     SuccessURLRedirectListMixin, UserPassesTestMixin)
+from django.http import HttpResponseRedirect
 from django.views.generic import DetailView, UpdateView, ListView, CreateView
 from django.views.generic.edit import BaseCreateView
+import waffle
 
 from . import forms
 from . import models
@@ -76,8 +79,23 @@ class MotiveIncidentView(
     motive_pk_url_kwarg = 'motive_pk'
     form_class = forms.CreateIncidentForm
 
+    def post(self, request, *args, **kwargs):
+        if waffle.flag_is_active(request, 'limit_incident_logging_hourly'):
+            hour_ago = arrow.utcnow().replace(hours=-1)
+            try:
+                latest_incident = self.get_motive().incidents.filter(
+                    created__gte=hour_ago.datetime).latest()
+                # found latest incident
+                if latest_incident:
+                    self.messages.error(self.get_incident_limit_message(),
+                                        fail_silently=True)
+                    return HttpResponseRedirect(self.get_success_url())
+            except models.Incident.DoesNotExist:
+                pass
+        return super(MotiveIncidentView, self).post(request, *args, **kwargs)
+
     def get_thing_sentiment(self):
-        return 'good' if self.object.motive.thing.behavior is models.Thing.GOOD else 'bad'
+        return 'good' if not self.object.motive.thing.is_negative else 'bad'
 
     def get_form_valid_message(self):
         messages = {
@@ -92,6 +110,11 @@ class MotiveIncidentView(
             'bad': 'Gona have to wait a bit before you can commit that atrocity again.'
         }
         return messages[self.get_thing_sentiment()]
+
+    def get_incident_limit_message(self):
+        return ("You've reported an incident of {verb} {name} recently. "
+                "Please wait a while before reporting again, gosh.".format(
+                    verb=self.motive.thing.verb, name=self.motive.thing.name))
 
     def form_invalid(self, form):
         return self.form_valid(form)

@@ -30,4 +30,6 @@ urlpatterns = patterns('',
 
     url(r'^things/', include('things.urls', namespace='things')),
 
+    url(r'^', include('waffle.urls')),
+
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -256,6 +256,7 @@ class Incident(TimeStampedModel):
 
     class Meta:
         ordering = ('-created',)
+        get_latest_by = ('created')
 
     def __unicode__(self):
         return "{} - incident".format(self.motive)

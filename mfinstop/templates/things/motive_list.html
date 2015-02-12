@@ -25,7 +25,7 @@
                         {# Negative Thing #}
                         <p>Limit yourself to only <strong>{{ motive.thing.verb }} {{ motive.amount }}</strong> every <strong>{{ period.length }} days.</strong> {{ period_ends() }}</p>
                         {% if period.over_incidents %}
-                            <p>Well looks like you've gone over your limit, What ever are we going to do with you?</p>
+                            <p>Well, looks like you've gone over your limit, What ever are we going to do with you?</p>
                         {% elif period.incidents_left == 0 %}
                             <p>Hold on there bucko, you ain't got any lives to spare!</p>
                         {% else %}
@@ -74,6 +74,7 @@
     </div>
 {% endfor %}
 </div>
+{# FUTURE FEATURE: limit amount of things you can create, pay to have more! #}
 {% if motive_list.exists() %}
     <a href="{{ url('things:create_motive') }}" class="btn btn-primary">Add more Things!</a>
 {% endif %}

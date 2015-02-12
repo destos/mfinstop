@@ -39,6 +39,9 @@ django-avatar==2.0
 # Time zones support
 pytz==2014.10
 
+# Feature testing
+django-waffle
+
 # Your custom requirements go here
 django-durationfield==0.5.1
 django-betterforms==1.1.1

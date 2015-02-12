@@ -47,6 +47,7 @@ class Common(Configuration):
         # 'lib.l10n_utils',
         'djcelery',
         'djrill',
+        'waffle',
     )
 
     # Authentication services
@@ -80,6 +81,7 @@ class Common(Configuration):
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
+        "waffle.middleware.WaffleMiddleware"
     )
     # END MIDDLEWARE CONFIGURATION
 
@@ -323,3 +325,8 @@ class Common(Configuration):
     CELERY_IMPORTS = (
         'things.tasks',
     )
+
+    # Waffle app
+    WAFFLE_FLAG_DEFAULT = values.BooleanValue(False)
+    WAFFLE_SWITCH_DEFAULT = values.BooleanValue(False)
+    WAFFLE_SAMPLE_DEFAULT = values.BooleanValue(False)
