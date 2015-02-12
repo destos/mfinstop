@@ -12,11 +12,11 @@
 
 
 <form class="uniForm" method="post">
-{% csrf_token %}
+{{ csrf() }}
 
 <fieldset class="blockLabels">
 {% if form.non_field_errors() %}
-<div id="errorMsg">{{form.non_field_errors()|safe()}}</div>
+<div id="errorMsg">{{form.non_field_errors()}}</div>
 {% endif %}
 
 {% for base_account in form.accounts %}

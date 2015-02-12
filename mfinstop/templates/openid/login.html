@@ -8,8 +8,8 @@
 
 
 <form id="openid_login_form" class="openid_login" method="post" action="{% url 'openid_login' %}">
-{% csrf_token %}
-{{form.as_p()|safe() }}
+{{ csrf() }}
+{{ form.as_p() }}
 <button type="submit">Sign In</button>
 </form>
 
