@@ -58,7 +58,7 @@ class Common(Configuration):
         # 'allauth.socialaccount.providers.openid',
         # 'allauth.socialaccount.providers.persona',
         'allauth.socialaccount.providers.twitter',
-        'allauth.socialaccount.providers.facebook',
+        # 'allauth.socialaccount.providers.facebook',
         # 'allauth.socialaccount.providers.amazon',
     )
 
