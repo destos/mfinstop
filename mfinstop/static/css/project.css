@@ -60,4 +60,6 @@
   border-left: 1px solid #888;
   padding: 5px 10px;
   line-height: 1em;
+  background: white;
+  white-space: nowrap;
 }
