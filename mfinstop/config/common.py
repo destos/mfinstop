@@ -325,6 +325,7 @@ class Common(Configuration):
     CELERY_RESULT_BACKEND = values.Value('djcelery.backends.database:DatabaseBackend')
     CELERYBEAT_SCHEDULER = values.Value('djcelery.schedulers.DatabaseScheduler')
     CELERY_SEND_TASK_ERROR_EMAILS = values.BooleanValue(True)
+    CELERY_ALWAYS_EAGER = values.BooleanValue(False)
     CELERY_IMPORTS = (
         'things.tasks',
     )

@@ -44,5 +44,5 @@ class Local(Common):
     # Your local stuff: Below this line define 3rd party library settings
 
     # CELERY
-    CELERY_ALWAYS_EAGER = True
+    CELERY_ALWAYS_EAGER = values.BooleanValue(True)
     BROKER_URL = values.Value("redis://localhost:6379/5")
