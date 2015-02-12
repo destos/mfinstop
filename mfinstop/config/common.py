@@ -36,6 +36,7 @@ class Common(Configuration):
         # Admin
         'django.contrib.admin',
     )
+
     THIRD_PARTY_APPS = (
         'crispy_forms',  # Form layouts
         'django_extensions',
@@ -177,6 +178,7 @@ class Common(Configuration):
         'django.contrib.messages.context_processors.messages',
         'django.core.context_processors.request',
         # Your stuff: custom template context processers go here
+        'context_processors.google_ua',
     )
 
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
@@ -201,6 +203,7 @@ class Common(Configuration):
         'context_processors',
         'crispy_forms',
         'bootstrap',
+        'waffle',
     )
 
     JINJA_CONFIG = {
@@ -330,3 +333,6 @@ class Common(Configuration):
     WAFFLE_FLAG_DEFAULT = values.BooleanValue(False)
     WAFFLE_SWITCH_DEFAULT = values.BooleanValue(False)
     WAFFLE_SAMPLE_DEFAULT = values.BooleanValue(False)
+
+    # For future GA script
+    GOOGLE_TRACKING_ID = values.Value('UA-changeme')

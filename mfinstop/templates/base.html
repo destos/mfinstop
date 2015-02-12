@@ -81,6 +81,9 @@
 
       <script>{{ waffle.wafflejs() }}</script>
     {% endblock javascript %}
+    {% if not debug %}
+      {% include('ga_analytics.html') %}
+    {% endif %}
   </body>
 </html>
 
