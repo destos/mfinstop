@@ -1,12 +1,16 @@
 <script>
+    {% if debug -%}
+    window.ga_debug = {trace: true};
+    {%- endif %}
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', '{{ google_ua }}', 'auto');
+    })(window,document,'script','//www.google-analytics.com/analytics{{ '_debug' if debug else '' }}.js','ga');
+    var ga_create_conf = {
+        {% if request.user.pk -%}
+        userId: {{ request.user.pk }}
+        {%- endif %}
+    }
+    ga('create', '{{ google_ua }}', ga_create_conf);
     ga('send', 'pageview');
-    {% if request.user -%}
-    ga('set', '&uid', {{ request.user.pk }});
-    {%- endif %}
 </script>
