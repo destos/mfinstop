@@ -340,7 +340,7 @@ class Common(Configuration):
     WAFFLE_SAMPLE_DEFAULT = values.BooleanValue(False)
 
     # For future GA script
-    GOOGLE_TRACKING_ID = values.Value('UA-changeme')
+    GOOGLE_TRACKING_ID = values.Value('')
 
     MESSAGE_TAGS = {
         messages.DEBUG: 'alert-warning',
