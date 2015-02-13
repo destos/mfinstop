@@ -27,9 +27,9 @@
     <a href="http://{{ site.domain }}{{ motive.get_log_incident_url() }}">I did this today.</a>
     {% if period %}
         {% if motive.thing.is_negative %}
-            <p>Limit yourself to only <strong>{{ motive.thing.verb }} {{ motive.amount }}</strong> every <strong>{{ period.length }} days.</strong> {{ period_ends(period) }}</p>
+            <p>Limit yourself to only <strong>{{ motive.thing.verb }} {{ motive.amount }}</strong> every <strong>{{ period.days_total }} days.</strong> {{ period_ends(period) }}</p>
         {% else %}
-            <p>Do more <strong>{{ motive.thing.verb }}</strong>, by doing it at least <strong>{{ motive.amount }} times</strong> every <strong>{{ period.length }} days.</strong> {{ period_ends(period) }}</p>
+            <p>Do more <strong>{{ motive.thing.verb }}</strong>, by doing it at least <strong>{{ motive.amount }} times</strong> every <strong>{{ period.days_total }} days.</strong> {{ period_ends(period) }}</p>
         {% endif %}
     {% endif %}
 {% endfor %}

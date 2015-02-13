@@ -40,15 +40,17 @@ class CheckEndingPeriods(
         for motive in motives:
             # calculate time till task needs run.
             morning = now.floor('day').replace(minute=+10)
+            # Task to create new period
             CreateMotivePeriod().apply_async(motive, eta=morning.datetime)
+            # TODO: Task to send notification of new period
         return motives
 
 
 class CreateMotivePeriod(app.Task):
     ignore_results = True
 
-    def run(self, motive):
-        period = create_period(motive)
+    def run(self, motive, eta):
+        period = create_period(motive, start=eta)
         logger("Created new period for motive {}".format(motive))
         return period
 

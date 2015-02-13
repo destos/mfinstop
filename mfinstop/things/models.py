@@ -113,7 +113,7 @@ class MotivePeriod(models.Model):
                 arrow.get(self.ends).replace(days=+1).floor('day').datetime))
 
     @property
-    def over_incidents(self):
+    def is_over_incidents(self):
         """How many incidents are we over in this period"""
         return len(self.incidents) > self.motive.amount
 
@@ -123,7 +123,7 @@ class MotivePeriod(models.Model):
         return max(self.motive.amount - len(self.incidents), 0)
 
     @property
-    def length(self):
+    def days_total(self):
         """Total amount of days in this period"""
         return (self.ends - self.starts).days
 
@@ -139,7 +139,7 @@ class MotivePeriod(models.Model):
         return arrow.get(self.ends).humanize()
 
     @property
-    def past_today(self):
+    def is_past_today(self):
         """Check if the period has past"""
         present = arrow.utcnow()
         return present.date() > self.ends
@@ -147,7 +147,7 @@ class MotivePeriod(models.Model):
     @property
     def days_past(self):
         """How many days have past so far in this period"""
-        return self.length - self.days_left
+        return self.days_total - self.days_left
 
     @property
     def progress_bars(self):
@@ -157,9 +157,9 @@ class MotivePeriod(models.Model):
         If the total moves past the day percent it turns the warning colors,
         if it moves past the motive amount limit it turns the danger color.
         """
-        total_days = self.length
+        days_total = self.days_total
         days_past = self.days_past
-        incident_day_ratio = float(total_days) / float(self.motive.amount)
+        incident_day_ratio = float(days_total) / float(self.motive.amount)
         max_incidents = float(self.motive.amount) * incident_day_ratio
 
         incidents = self.incidents
@@ -169,12 +169,12 @@ class MotivePeriod(models.Model):
         # TODO: indicator for open days shows how many days left
 
         # Determine the highest increment
-        if current_incidents > total_days:
+        if current_incidents > days_total:
             # If the incidents are already more than days that can pass we wont
             # be showing any days
             max_amount = current_incidents
         else:
-            max_amount = float(total_days)
+            max_amount = float(days_total)
 
         bars = []
 
@@ -191,10 +191,10 @@ class MotivePeriod(models.Model):
                 'indi': 'within bounds',
             })
 
-        over_incidents = max(current_incidents - max_incidents, 0)
+        is_over_incidents = max(current_incidents - max_incidents, 0)
         if current_incidents > days_past:
             # incidents that occur past the date percent, (going on a negative incident rate)
-            close_bar = min(current_incidents, total_days)
+            close_bar = min(current_incidents, days_total)
             # Make info bar for good things
             if self.motive.thing.is_negative:
                 bars.append({
@@ -219,7 +219,7 @@ class MotivePeriod(models.Model):
                 'indi': 'safe zone'
             })
 
-        if bool(over_incidents):
+        if bool(is_over_incidents):
             over_bar = make_percent(current_incidents)
             # incidents that pass the max_incidents
             over_by = incidents_amount - self.motive.amount

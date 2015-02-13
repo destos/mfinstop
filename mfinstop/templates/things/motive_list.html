@@ -21,8 +21,8 @@
                     {# change verbiage based on behavior #}
                     {% if motive.thing.is_negative %}
                         {# Negative Thing #}
-                        <p>Limit yourself to only <strong>{{ motive.thing.verb }} {{ motive.amount }}</strong> every <strong>{{ period.length }} days.</strong> {{ period_ends(period) }}</p>
-                        {% if period.over_incidents %}
+                        <p>Limit yourself to only <strong>{{ motive.thing.verb }} {{ motive.amount }}</strong> every <strong>{{ period.days_total }} days.</strong> {{ period_ends(period) }}</p>
+                        {% if period.is_over_incidents %}
                             <p>Well, looks like you've gone over your limit, What ever are we going to do with you?</p>
                         {% elif period.incidents_left == 0 %}
                             <p>Hold on there bucko, you ain't got any lives to spare!</p>
@@ -31,8 +31,8 @@
                         {% endif %}
                     {% else %}
                         {# Positive Thing #}
-                        <p>Do more <strong>{{ motive.thing.verb }}</strong>, by doing it at least <strong>{{ motive.amount }} times</strong> every <strong>{{ period.length }} days.</strong> {{ period_ends(period) }}</p>
-                        {% if period.over_incidents %}
+                        <p>Do more <strong>{{ motive.thing.verb }}</strong>, by doing it at least <strong>{{ motive.amount }} times</strong> every <strong>{{ period.days_total }} days.</strong> {{ period_ends(period) }}</p>
+                        {% if period.is_over_incidents %}
                             <p>Looks like you're doing a good job! Keep it up!</p>
                         {% elif period.incidents_left == 0 %}
                             <p>Woot! looks like you've met your goal! See if you can do a few more before the next round.</p>
@@ -52,7 +52,7 @@
                 </form>
             </div>
         </div>
-    {% if period and not period.past_today %}
+    {% if period and not period.is_past_today %}
         {% set progress_bars = period.progress_bars %}
         <div class="progress">
             {% for bar in progress_bars %}
