@@ -1,8 +1,10 @@
-{% extends "base.html" %}
+{% extends "sub_base.html" %}
+
+{% block page_header %}
+    <h2>Adding that Thing</h2>
+{% endblock %}
 
 {% block content %}
-
-<h2>Adding that Thing</h2>
 
 {% set forms=form.forms.values() %}
 {% set thing=forms[1] %}
