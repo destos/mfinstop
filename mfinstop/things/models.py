@@ -78,10 +78,16 @@ class UserMotive(TimeStampedModel):
         return ('things:motive_incident', (), {'motive_pk': self.pk})
 
     @property
-    def latest_period(self):
+    def current_period(self):
+        """
+        get period that today is within
+        """
         try:
-            return self.periods.latest()
+            today = arrow.utcnow().date()
+            return self.periods.get(starts__lte=today, ends__gte=today)
         except MotivePeriod.DoesNotExist:
+            return None
+        except MotivePeriod.MultipleObjectsReturned:
             return None
 
     def create_incident(self):

@@ -9,7 +9,7 @@
 
 <div id="motive-list" class="list-group">
 {% for motive in motive_list %}
-    {% set period = motive.latest_period %}
+    {% set period = motive.current_period %}
     <div class="list-group-item clearfix">
         <div class="clearfix">
             <div class="pull-left">

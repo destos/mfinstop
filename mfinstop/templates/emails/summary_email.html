@@ -7,7 +7,7 @@
 <p>
     This is a reminder email that contains certain things you wish to
     {%- if has_positive_motive %} start {% endif -%}
-    {% if has_postive_motive and has_negative_motive %}or{% endif -%}
+    {% if has_positive_motive and has_negative_motive %}or{% endif -%}
     {%- if has_negative_motive %} stop {% endif -%} doing.
 </p>
 <p>Please let us know if you did any of these things today by clicking the links below them.</p>
@@ -20,7 +20,7 @@
 {% endif %}
 
 {% for motive in motives %}
-    {% set period = motive.latest_period %}
+    {% set period = motive.current_period %}
     <h4>{{ motive_header(motive) }}</h4>
     {# TODO: create a unique link per email and only allow it to apply to one incident creation?
     To prevent users from spamming an email link if they want to report an incident. Not sure.#}
