@@ -17,12 +17,12 @@ module.exports = function (grunt) {
       app: this.app,
       templates: this.app + '/templates',
       css: this.app + '/static/css',
-      sass: this.app + '/static/sass',
+      styl: this.app + '/static/styl',
       fonts: this.app + '/static/fonts',
       images: this.app + '/static/images',
       js: this.app + '/static/js',
       manageScript: this.app + '/manage.py'
-    }
+    };
   };
 
   grunt.initConfig({
@@ -35,14 +35,14 @@ module.exports = function (grunt) {
       gruntfile: {
         files: ['Gruntfile.js']
       },
-      compass: {
-        files: ['<%= paths.sass %>/**/*.{scss,sass}'],
-        tasks: ['compass:server']
+      stylus: {
+        files: ['<%= paths.styl %>/**/*.styl'],
+        tasks: ['stylus:compile']
       },
       livereload: {
         files: [
           '<%= paths.js %>/**/*.js',
-          '<%= paths.sass %>/**/*.{scss,sass}',
+          '<%= paths.styl %>/**/*.styl',
           '<%= paths.app %>/**/*.html'
           ],
         options: {
@@ -52,25 +52,17 @@ module.exports = function (grunt) {
       },
     },
 
-    // see: https://github.com/gruntjs/grunt-contrib-compass
-    compass: {
-      options: {
-          sassDir: '<%= paths.sass %>',
-          cssDir: '<%= paths.css %>',
-          fontsDir: '<%= paths.fonts %>',
-          imagesDir: '<%= paths.images %>',
-          relativeAssets: false,
-          assetCacheBuster: false,
-          raw: 'Sass::Script::Number.precision = 10\n'
-      },
-      dist: {
+    stylus: {
+      compile: {
         options: {
-          environment: 'production'
-        }
-      },
-      server: {
-        options: {
-          // debugInfo: true
+          paths: ['<%= paths.styl %>'],
+          import: ['variables', 'mixins'],
+          // linenos: true,
+          compress: false
+          // firebug: true
+        },
+        files: {
+          '<%= paths.css %>/main.css': '<%= paths.styl %>/main.styl'
         }
       }
     },
@@ -81,7 +73,7 @@ module.exports = function (grunt) {
         bg: true
       },
       runDjango: {
-        cmd: 'python <%= paths.manageScript %> runserver'
+        cmd: 'python <%= paths.manageScript %> runserver_plus'
       }
     }
   });
@@ -92,7 +84,7 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('build', [
-    'compass:dist'
+    'stylus:compile'
   ]);
 
   grunt.registerTask('default', [

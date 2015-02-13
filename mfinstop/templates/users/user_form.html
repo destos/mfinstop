@@ -1,13 +1,14 @@
-{% extends "base.html" %}
+{% extends "sub_base.html" %}
 
 {% block title %}User: {{ user.username }}{% endblock %}
 
-{% block content %}
+{% block page_header %}
+    <h2>User: {{ user.username }}</h2>
+{% endblock %}
 
-<div class="container">
+{% block content %}
     <div class="row">
         <div class="col-lg-12">
-            <h1>{% block header %}User: {{ user.username }}{% endblock %}</h1>
             <form class="form-horizontal" method="post" action="{{ url('users:update') }}">
                 {{ csrf() }}
                 {{ form.as_p() }}
@@ -20,5 +21,4 @@
             </form>
         </div>
     </div>
-</div>
 {% endblock %}

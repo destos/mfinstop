@@ -1,9 +1,11 @@
 {% from 'things/macros/motives.jinja' import motive_header, period_ends %}
-{% extends "base.html" %}
+{% extends "sub_base.html" %}
+
+{% block page_header %}
+<h2>All your damn Things</h2>
+{% endblock %}
 
 {% block content %}
-
-<h2>All your damn Things</h2>
 
 <div id="motive-list" class="list-group">
 {% for motive in motive_list %}

@@ -2,12 +2,13 @@
 
 {% block head_title %}{{ _("Sign In") }}{% endblock %}
 
+{% block page_header %}
+  <h2>{{ _("Sign In") }}</h2>
+{% endblock %}
+
 {% block content %}
-<div class="container">
   <div class="row">
     <div class="col-md-5">
-
-      <h2>{{ _("Sign In") }}</h2>
 
       {% if socialaccount.providers  %}
       <p>{% trans site_name=site.name %}Please sign in with one
@@ -42,5 +43,4 @@
       </form>
     </div>
   </div>
-</div>
 {% endblock %}

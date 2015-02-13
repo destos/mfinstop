@@ -1,16 +1,12 @@
-{% extends "base.html" %}
+{% extends "sub_base.html" %}
 
 {% block title %}User: {{ object.username }}{% endblock %}
 
+{% block page_header %}
+  <h2>{{ object.username }}</h2>
+{% endblock %}
+
 {% block content %}
-<div class="container">
-
-  <div class="row">
-    <div class="col-sm-12">
-
-      <h2>{{ object.username }}</h2>
-    </div>
-  </div>
 
 {% if object == request.user %}
 <!-- Action buttons -->

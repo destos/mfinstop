@@ -2,12 +2,14 @@
 
 {% block head_title %}{{ _("Sign Out") }}{% endblock %}
 
+{% block page_header %}
+  <h2>{{ _("Sign Out") }}</h2>
+{% endblock %}
+
 {% block content %}
-<div class="container">
   <div class="row">
     <div class="col-md-5">
 
-        <h2>{{ _("Sign Out") }}</h2>
 
         <p>{{ _("Are you sure you want to sign out?") }}</p>
 
@@ -20,6 +22,4 @@
         </form>
     </div>
   </div>
-</div>
-
 {% endblock %}

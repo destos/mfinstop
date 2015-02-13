@@ -15,6 +15,10 @@ from os.path import join, dirname
 
 from configurations import Configuration, values
 
+# for use in django messages framework customization
+from django.contrib.messages import constants as messages
+
+
 BASE_DIR = dirname(dirname(__file__))
 
 
@@ -337,3 +341,11 @@ class Common(Configuration):
 
     # For future GA script
     GOOGLE_TRACKING_ID = values.Value('UA-changeme')
+
+    MESSAGE_TAGS = {
+        messages.DEBUG: 'alert-warning',
+        messages.INFO: 'alert-info',
+        messages.SUCCESS: 'alert-success',
+        messages.WARNING: 'alert-warning',
+        messages.ERROR: 'alert-danger'
+    }
