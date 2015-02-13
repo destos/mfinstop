@@ -14,23 +14,33 @@ class CheckEndingPeriods(
 
     def run(self):
         now = arrow.utcnow().ceil('day')
-        motives = self.get_active_motives().filter(
-            periods__ends__range=(
-                now.date(), now.floor('day').date()))
+        # motives = self.get_active_motives().filter(
+        #     periods__ends__range=(
+        #         now.replace(day=+1).date(), now.date()))
+        motives = self.get_active_motives()
         for motive in motives:
-            # calculate time till task needs run.
-            morning = now.floor('day').replace(minute=+10)
-            # Task to create new period
-            CreateMotivePeriod().apply_async(motive, eta=morning.datetime)
+            period = motive.current_period
+            new_period = None
+            if period and period.ends < now.date():
+                new_period = CreateMotivePeriod().delay(motive, start=arrow.get(period.ends).replace(days=+1))
+            elif not period:
+                # Task to create new period
+                new_period = CreateMotivePeriod().delay(motive, start=now)
             # TODO: Task to send notification of new period
+            if new_period:
+                pass
         return motives
 
 
 class CreateMotivePeriod(Task):
     ignore_results = True
 
-    def run(self, motive, eta):
-        period = create_period(motive, start=eta)
+    def run(self, motive, start=None):
+        try:
+            period = create_period(motive, start)
+        except AssertionError, e:
+            print("assertion error when creating new period for motive {},\n{}".format(motive, e))
+            return None
         print("Created new period for motive {}".format(motive))
         return period
 
