@@ -6,7 +6,7 @@
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         <div class="site-heading">
-          <h1>{{ _("M' Fin' Stop") }}</h1>
+          <h1>{{ _("M' Fin' STOP") }}</h1>
           <hr class="small">
           <span class="subheading">Probably the hardest way to change a bad habbit.</span>
         </div>
@@ -17,4 +17,38 @@
 {% endblock %}
 
 {% block content %}
+
+<div class="row">
+  <div class="col-sm-7">
+    <h2>How it works</h2>
+    <ol>
+      <li>You let us know what terrible thing you're doing that you would like to stop.</li>
+      <li>We harass you via email every day, where you let us know how you're doing.</li>
+      <li>At the end of a period you specify we let everyone know how you've done.</li>
+      <li>Rinse and repeat.</li>
+    </ol>
+  </div>
+  <div class="col-sm-5">
+    <h3 class="text-center">Need your rear kicked into gear?</h3>
+    <p>
+        <a href="{{ url('account_signup') }}" class="btn btn-lg btn-block btn-primary">Sign up!</a>
+    </p>
+  </div>
+</div>
+
+<hr>
+
+{% if some_things %}
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2">
+    <div class="example-things">
+      <h3>Here are some of the things people are working on:</h3>
+      {% for thing in some_things %}
+        <h4 class="thing-title">{{thing}}</h4>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
 {% endblock %}

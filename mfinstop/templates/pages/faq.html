@@ -1,0 +1,10 @@
+{% extends "sub_base.html" %}
+
+{% block page_header %}
+    <h2>{{ _('FAQ') }}</h2>
+{% endblock %}
+
+{% block content %}
+    <h3 class="text-center">No one has asked any questions yet.</h3>
+    <p class="text-center">Maybe you would like to be the <a href="{{ url('contact') }}">first one?</a></p>
+{% endblock %}

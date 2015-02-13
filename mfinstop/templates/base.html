@@ -2,7 +2,7 @@
 <html lang="en" ng-app>
   <head>
     <meta charset="utf-8">
-    <title>{% block title %}{{ _("M' Fin' Stop") }}{% endblock title %}</title>
+    <title>{% block title %}{{ _("M' Fin' STOP") }}{% endblock title %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -18,7 +18,6 @@
     <link href="{{ static('css/main.css') }}" rel="stylesheet">
     <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
     {% endblock %}
-
   </head>
 
   <body>
@@ -32,7 +31,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="{{ url('home') }}">{{ _("M' Fin' Stop") }}</a>
+          <a class="navbar-brand" href="{{ url('home') }}">{{ _("M' Fin' STOP") }}</a>
         </div>
 
         {# actual menu #}
@@ -55,6 +54,8 @@
 
     {% block header %}{% endblock %}
 
+    {% block container %}
+    {# If extending container make sure you call {{ super() }} at the top if messages need displayed #}
     <section class="container">
 
       {% if messages %}
@@ -67,13 +68,19 @@
       {% endblock content %}
 
     </section> <!-- /container -->
+    {% endblock %}
 
     <hr>
 
     <footer class="main-footer">
       <div class="container">
         <p class="copyright text-muted">
-          &copy; 2015 {{ _("M' Fin' Stop") }}
+          &copy; 2015 {{ _("M' Fin' STOP") }}
+        </p>
+        <p class="footer-links text-center">
+          <a href="{{ url('about') }}">about</a>
+          <a href="{{ url('faq') }}">faq</a>
+          <a href="{{ url('contact') }}">contact</a>
         </p>
       </div>
     </footer>
