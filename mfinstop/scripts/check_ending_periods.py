@@ -21,14 +21,16 @@ class CheckEndingPeriods(
         for motive in motives:
             period = motive.current_period
             new_period = None
+            if not motive.user.is_active:
+                continue
             if period and period.ends < now.date():
                 new_period = CreateMotivePeriod().delay(motive, start=arrow.get(period.ends).replace(days=+1))
             elif not period:
                 # Task to create new period
                 new_period = CreateMotivePeriod().delay(motive, start=now)
             # TODO: Task to send notification of new period
-            if new_period:
-                pass
+            # if new_period:
+            #     pass
         return motives
 
 
