@@ -25,7 +25,7 @@ class SendSummaryEmail(EmailTask):
     def run(self, user, force=False):
         if not isinstance(user, User):
             user = User.objects.get(id=int(user))
-        if not user.is_active:
+        if not force and not user.is_active:
             return
         motives = user.motives.all()
         if force is True or (motives and not user.quitter):
