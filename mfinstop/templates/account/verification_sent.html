@@ -7,12 +7,9 @@
 {% block head_title %}{{ _("Verify Your E-mail Address") }}{% endblock %}
 
 {% block content %}
-<div class="container">
   <div class="row">
     <div class="col-md-5">
         <p>{% trans %}We have sent an e-mail to <a href="mailto:{{ email }}">{{ email }}</a> for verification. Follow the link provided to finalize the signup process. Please contact us if you do not receive it within a few minutes.{% endtrans %}</p>
     </div>
   </div>
-</div>
-
 {% endblock %}
