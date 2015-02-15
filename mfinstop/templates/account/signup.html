@@ -2,9 +2,11 @@
 
 {% block title %}{{ _("Signup") }}{% endblock title %}
 
-{% block content %}
-<h1>{{ _("Sign Up") }}</h1>
+{% block page_header %}
+    <h2>{{ _("Sign Up") }}</h2>
+{% endblock %}
 
+{% block content %}
 <p>{% trans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endtrans %}</p>
 
 <form class="signup" id="signup_form" method="post" action="{{ url('account_signup') }}">
