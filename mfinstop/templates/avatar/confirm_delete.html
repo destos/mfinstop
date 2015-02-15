@@ -1,9 +1,12 @@
 {% extends "avatar/base.html" %}
 
+{% block page_header %}
+    <h2>{{ _("Please select the avatars that you would like to delete.") }}</h2>
+{% endblock %}
+
 {% block content %}
   <div class="row">
     <div class="col-xs-12">
-    <h2>{{ _("Please select the avatars that you would like to delete.") }}</h2>
     {% if not avatars %}
         {{ url('avatar_change' as avatar_change_url) }}
         <p>{% trans %}You have no avatars to delete. Please <a href="{{ avatar_change_url }}">upload one</a> now.{% endtrans %}</p>

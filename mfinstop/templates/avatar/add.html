@@ -1,9 +1,12 @@
 {% extends "avatar/base.html" %}
 
+{% block page_header %}
+    <h2>{{ _("Your current avatar: ") }}</h2>
+{% endblock %}
+
 {% block content %}
   <div class="row">
     <div class="col-xs-12">
-      <h2>{{ _("Your current avatar: ") }}</h2>
         {{ user_avatar(user) }}
         {% if not avatars %}
             <p>{{ _("You haven't uploaded an avatar yet. Please upload one now.") }}</p>
