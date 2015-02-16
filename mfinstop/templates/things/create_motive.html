@@ -6,9 +6,9 @@
 
 {% block content %}
 
-{% set forms=form.forms.values() %}
-{% set thing=forms[1] %}
-{% set motive=forms[0] %}
+{% set forms=form.forms %}
+{% set thing=forms['thing'] %}
+{% set motive=forms['motive'] %}
 
 <form id="motive-form" action="." method="POST" class="form-inline">
     {{ csrf() }}
