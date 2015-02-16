@@ -1,9 +1,9 @@
 import arrow
 from braces.views import (
     LoginRequiredMixin, UserFormKwargsMixin, FormMessagesMixin,
-    SuccessURLRedirectListMixin, UserPassesTestMixin)
+    SuccessURLRedirectListMixin, UserPassesTestMixin, MessageMixin)
 from django.http import HttpResponseRedirect
-from django.views.generic import DetailView, UpdateView, ListView, CreateView
+from django.views.generic import DetailView, UpdateView, ListView, CreateView, View
 from django.views.generic.edit import BaseCreateView
 import waffle
 
@@ -62,11 +62,10 @@ class MotiveListView(
 # notify the user that the incident wasn't increased.
 class MotiveIncidentView(
         mixins.UserMotiveMixin,
-        mixins.UserMotiveFormKwargsMixin,
         mixins.UserMotiveAccess,
         SuccessURLRedirectListMixin,
-        FormMessagesMixin,
-        BaseCreateView):
+        MessageMixin,
+        View):
 
     """
     Log an incident to a user's motive,
@@ -75,18 +74,16 @@ class MotiveIncidentView(
 
     http_method_names = ('post', 'get',)
     success_list_url = 'things:motives_list'
-    model = models.Incident
-    motive_pk_url_kwarg = 'motive_pk'
-    form_class = forms.CreateIncidentForm
 
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        motive = self.get_motive()
         if waffle.flag_is_active(request, 'limit_incident_logging_hourly'):
             hour_ago = arrow.utcnow().replace(hours=-1)
             try:
-                latest_incident = self.get_motive().incidents.filter(
+                latest_incident = motive.incidents.filter(
                     created__gte=hour_ago.datetime).latest()
                 # found latest incident
                 if latest_incident:
@@ -95,10 +92,14 @@ class MotiveIncidentView(
                     return HttpResponseRedirect(self.get_success_url())
             except models.Incident.DoesNotExist:
                 pass
-        return super(MotiveIncidentView, self).post(request, *args, **kwargs)
+            incident = models.Incident.objects.create(motive=motive)
+            if incident:
+                self.messages.success(self.get_form_valid_message(),
+                                    fail_silently=True)
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_thing_sentiment(self):
-        return 'good' if not self.object.motive.thing.is_negative else 'bad'
+        return 'good' if not self.motive.thing.is_negative else 'bad'
 
     def get_form_valid_message(self):
         messages = {

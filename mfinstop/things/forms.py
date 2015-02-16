@@ -88,20 +88,3 @@ class CreateThingAndUserMotiveForm(MultiModelForm):
             objects['motive'].thing = objects['thing']
             objects['motive'].save()
         return objects
-
-
-class CreateIncidentForm(forms.ModelForm):
-    """Not what a form is for but okay... :/"""
-    def __init__(self, *args, **kwargs):
-        self.motive = kwargs.pop('motive')
-        super(CreateIncidentForm, self).__init__(*args, **kwargs)
-
-    def save(self, commit=True):
-        incident = self._meta.model.objects.create(**{'motive': self.motive})
-        if commit:
-            incident.save()
-        return incident
-
-    class Meta:
-        model = Incident
-        fields = ('motive',)

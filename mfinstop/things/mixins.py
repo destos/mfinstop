@@ -15,8 +15,8 @@ class UserMotiveMixin(object):
     motive_slug_url_kwarg = 'motive_slug'
 
     def dispatch(self, request, *args, **kwargs):
-        self.motive_pk = kwargs.get(self.motive_pk_url_kwarg, None)
-        self.motive_slug = kwargs.get(self.motive_slug_url_kwarg, None)
+        self.motive_pk = int(kwargs.get(self.motive_pk_url_kwarg, None))
+        self.motive_slug = str(kwargs.get(self.motive_slug_url_kwarg, None))
         return super(UserMotiveMixin, self).dispatch(request, *args, **kwargs)
 
     def get_motive(self):
@@ -55,8 +55,6 @@ class UserMotiveFormKwargsMixin(object):
 class UserMotiveAccess(LoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
         assert hasattr(self, 'get_motive')
-        response = super(UserMotiveAccess, self).dispatch(
-            request, *args, **kwargs)
         if self.get_motive().user == request.user and not (
                 request.user.is_superuser):
             if self.raise_exception:
@@ -65,4 +63,6 @@ class UserMotiveAccess(LoginRequiredMixin):
                 return redirect_to_login(request.get_full_path(),
                                          self.get_login_url(),
                                          self.get_redirect_field_name())
+        response = super(UserMotiveAccess, self).dispatch(
+            request, *args, **kwargs)
         return response
