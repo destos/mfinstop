@@ -23,9 +23,9 @@ class HomePageView(TemplateView):
         return Thing.objects.public_things().order_by('?')[:self.num_things]
 
     def get_last_24_hours(self, behavior=Thing.BAD):
-        now = arrow.utcnow()
+        now = arrow.utcnow().ceil('hour')
         amounts = []
-        for hour in arrow.Arrow.range('hour', now.replace(hours=-24), now.ceil('hour')):
+        for hour in arrow.Arrow.range('hour', now.replace(hours=-24), now):
             amounts.append(
                 Incident.objects.filter(
                     motive__thing__behavior=behavior,
