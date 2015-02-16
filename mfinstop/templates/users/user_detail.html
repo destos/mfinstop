@@ -21,7 +21,7 @@
 <!-- End Action buttons -->
 {% endif %}
 
-{% if waffle.fla('show_user_actions') %}
+{% if waffle.flag('show_user_actions') %}
 <h3>What they've been up to:</h3>
 {% for action in user.actions.all() %}
 {# check that motive is not private before showing in actions #}

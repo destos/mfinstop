@@ -51,4 +51,34 @@
 </div>
 {% endif %}
 
+{% macro bars(incident_dict, type='success') %}
+{% if incident_dict.max > 0 %}
+<div class="thing-incidents">
+  {% for incidents in incident_dict.over_24_hours %}
+    <div class="progress vertical-incident-bar">
+      <div class="progress-bar progress-bar-{{ type }}" style="width: 100%; height: {{ (incidents / incident_dict.max) * 100 }}%">{{ incidents }}</div>
+    </div>
+  {% endfor %}
+</div>
+{% else %}
+<p>No incidents to show… :(</p>
+{% endif %}
+{% endmacro %}
+
+<div class="row">
+  <div class="col-sm-12">
+    <h3>In the last last 24 hours…</h3>
+  </div>
+  <div class="col-sm-6">
+    <h4>The Good</h4>
+    <p>There have been a total of {{ recent_good_incidents.total }} good incidents logged.</p>
+    {{ bars(recent_good_incidents) }}
+  </div>
+  <div class="col-sm-6">
+    <h4>The Bad</h4>
+    <p>There have been a total of {{ recent_bad_incidents.total }} bad incidents logged.</p>
+    {{ bars(recent_bad_incidents, type='danger') }}
+  </div>
+</div>
+
 {% endblock %}

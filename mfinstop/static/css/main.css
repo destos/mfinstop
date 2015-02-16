@@ -251,6 +251,18 @@ img::-moz-selection {
 body {
   webkit-tap-highlight-color: #0085a1;
 }
+.thing-incidents .vertical-incident-bar {
+  height: 50px;
+  float: left;
+  width: 3.3%;
+  margin-right: 0.66%;
+  position: relative;
+}
+.thing-incidents .vertical-incident-bar .progress-bar {
+  position: absolute;
+  top: auto;
+  bottom: 0;
+}
 #motive-form .form-group {
   display: block;
   float: left;
