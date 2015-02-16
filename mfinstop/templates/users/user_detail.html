@@ -1,26 +1,33 @@
 {% extends "sub_base.html" %}
 
-{% block title %}User: {{ object.username }}{% endblock %}
+{% block title %}User: {{ user.username }}{% endblock %}
 
 {% block page_header %}
-  <h2>{{ object.username }}</h2>
+  <h2>{{ user.username }}</h2>
 {% endblock %}
 
 {% block content %}
 
-{% if object == request.user %}
+{% if user == request.user %}
 <!-- Action buttons -->
 <div class="row">
-
-  <div class="col-sm-12 ">
+  <div class="col-sm-12">
     <a class="btn btn-primary" href="{{ url('users:update') }}">My Info</a>
     <a class="btn btn-primary" href="{{ url('account_email') }}">E-Mail</a>
     <a class="btn btn-info" href="{{ url('avatar_change') }}">Avatar</a>
     <!-- Your Stuff: Custom user template urls -->
   </div>
-
 </div>
 <!-- End Action buttons -->
+{% endif %}
+
+{% if waffle.fla('show_user_actions') %}
+<h3>What they've been up to:</h3>
+{% for action in user.actions.all() %}
+{# check that motive is not private before showing in actions #}
+{{ action }}
+<br>
+{% endfor %}
 {% endif %}
 
 </div>

@@ -1,28 +1,25 @@
 # -*- coding: utf-8 -*-
-# Import the reverse lookup function
 from django.core.urlresolvers import reverse
-
-# view imports
 from django.views.generic import DetailView, RedirectView, UpdateView, ListView
-
-# Only authenticated users can access views using this.
 from braces.views import LoginRequiredMixin
 
-# Import the form from users/forms.py
 from .forms import UserForm
-
-# Import the customized User model
 from .models import User
 
 
-class UserDetailView(LoginRequiredMixin, DetailView):
+class UserDetailView(
+        LoginRequiredMixin,
+        DetailView):
     model = User
-    # These next two lines tell the view to index lookups by username
+    context_object_name = 'user'
+
     slug_field = "username"
     slug_url_kwarg = "username"
 
 
-class UserRedirectView(LoginRequiredMixin, RedirectView):
+class UserRedirectView(
+        LoginRequiredMixin,
+        RedirectView):
     permanent = False
 
     def get_redirect_url(self):
@@ -30,7 +27,9 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
                        kwargs={"username": self.request.user.username})
 
 
-class UserUpdateView(LoginRequiredMixin, UpdateView):
+class UserUpdateView(
+        LoginRequiredMixin,
+        UpdateView):
 
     form_class = UserForm
 
@@ -47,7 +46,9 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
         return User.objects.get(username=self.request.user.username)
 
 
-class UserListView(LoginRequiredMixin, ListView):
+class UserListView(
+        LoginRequiredMixin,
+        ListView):
     model = User
     # These next two lines tell the view to index lookups by username
     slug_field = "username"

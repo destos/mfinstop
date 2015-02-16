@@ -2,6 +2,9 @@ import arrow
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
 from django_extensions.db.fields import AutoSlugField
+from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.models import ContentType
+from django.db.models.signals import post_save
 from durationfield.db.models.fields.duration import DurationField
 
 from users.models import User
@@ -60,6 +63,7 @@ class UserMotive(TimeStampedModel):
     # The goal amount to limit by or reach depending on if this is a good/bad thing
     amount = models.PositiveSmallIntegerField(default=1)
     duration = DurationField()
+    private = models.BooleanField(default=False)
 
     objects = UserMotiveQuerySet.as_manager()
 
@@ -92,6 +96,7 @@ class UserMotive(TimeStampedModel):
 
     def create_incident(self):
         return Incident.objects.create(motive=self)
+
 
 
 class MotivePeriod(models.Model):
@@ -275,3 +280,53 @@ class Incident(TimeStampedModel):
 
     def __unicode__(self):
         return "{} - incident".format(self.motive)
+
+
+class UserAction(TimeStampedModel):
+    """
+    Actions the user has taken
+    """
+
+    user = models.ForeignKey(User, related_name='actions')
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        ordering = ('-created',)
+
+    def save(self, *args, **kwargs):
+        # Add user based on ctype
+        c_type = self.content_type.name
+        if c_type == 'incident':
+            user = self.content_object.motive.user
+        if c_type == 'user motive':
+            user = self.content_object.user
+        if c_type == 'motive period':
+            user = self.content_object.motive.user
+        if c_type == 'thing':
+            user = self.content_object.creator
+        self.user = user
+        super(UserAction, self).save(*args, **kwargs)
+
+    @property
+    def type_slug(self):
+        return None
+
+    def __unicode__(self):
+        return "{} made a {}".format(self.user, self.content_type)
+
+
+def create_user_action(sender, **kwargs):
+    if 'created' in kwargs and kwargs['created']:
+        instance = kwargs['instance']
+        c_type = ContentType.objects.get_for_model(instance)
+        entry = UserAction.objects.create(
+            content_type=c_type,
+            object_id=instance.id)
+
+
+post_save.connect(create_user_action, sender=Incident)
+post_save.connect(create_user_action, sender=UserMotive)
+# post_save.connect(create_user_action, sender=MotivePeriod)
+post_save.connect(create_user_action, sender=Thing)
