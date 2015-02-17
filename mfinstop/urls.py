@@ -30,6 +30,9 @@ urlpatterns = patterns(
     # Manage Things
     url(r'^things/', include('things.urls', namespace='things')),
 
+    # Hijack urls
+    url(r'^hijack/', include('hijack.urls')),
+
     # feature test switches
     url(r'^', include('waffle.urls')),
 

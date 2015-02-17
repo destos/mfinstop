@@ -120,9 +120,6 @@ class MotiveIncidentView(
                 "Please wait a while before reporting again, gosh.".format(
                     verb=self.motive.thing.verb, name=self.motive.thing.name))
 
-    def form_invalid(self, form):
-        return self.form_valid(form)
-
 
 # View their motive's details and the incidents.
 class MotiveDetailView(

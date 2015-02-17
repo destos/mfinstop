@@ -11,7 +11,7 @@ class UserDetailView(
         LoginRequiredMixin,
         DetailView):
     model = User
-    context_object_name = 'user'
+    context_object_name = 'user_details'
 
     slug_field = "username"
     slug_url_kwarg = "username"

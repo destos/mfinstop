@@ -17,6 +17,7 @@ from configurations import Configuration, values
 
 # for use in django messages framework customization
 from django.contrib.messages import constants as messages
+from django.core.urlresolvers import reverse_lazy
 
 
 BASE_DIR = dirname(dirname(__file__))
@@ -53,6 +54,8 @@ class Common(Configuration):
         'djcelery',
         'djrill',
         'waffle',
+        'hijack',
+        'compat',
     )
 
     # Authentication services
@@ -349,3 +352,8 @@ class Common(Configuration):
         messages.WARNING: 'alert-warning',
         messages.ERROR: 'alert-danger'
     }
+
+    # Hijack settings
+    HIJACK_LOGIN_REDIRECT_URL = reverse_lazy('users:redirect')  # visit the user's profile
+    REVERSE_HIJACK_LOGIN_REDIRECT_URL = reverse_lazy('admin:users_user_changelist')  # view all users
+    SHOW_HIJACKUSER_IN_ADMIN = False

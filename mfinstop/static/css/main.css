@@ -38,11 +38,14 @@ body {
 .navbar-custom .navbar-brand {
   font-weight: 800;
 }
-.navbar-custom .nav li a {
+.navbar-custom .nav.navbar-nav > li > a {
   text-transform: uppercase;
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 1px;
+}
+.navbar-custom .nav.navbar-nav > .open > a {
+  background: rgba(255,255,255,0.8);
 }
 @media only screen and (min-width: 768px) {
   .navbar-custom {
@@ -57,12 +60,12 @@ body {
   .navbar-custom .navbar-brand:focus {
     color: rgba(255,255,255,0.8);
   }
-  .navbar-custom .nav li a {
+  .navbar-custom .nav > li > a {
     color: #fff;
     padding: 20px;
   }
-  .navbar-custom .nav li a:hover,
-  .navbar-custom .nav li a:focus {
+  .navbar-custom .nav > li > a:hover,
+  .navbar-custom .nav > li > a:focus {
     color: rgba(255,255,255,0.8);
   }
 }
@@ -102,11 +105,11 @@ body {
   .navbar-custom.is-fixed .navbar-brand:focus {
     color: #0085a1;
   }
-  .navbar-custom.is-fixed .nav li a {
+  .navbar-custom.is-fixed .nav > li > a {
     color: #404040;
   }
-  .navbar-custom.is-fixed .nav li a:hover,
-  .navbar-custom.is-fixed .nav li a:focus {
+  .navbar-custom.is-fixed .nav > li > a:hover,
+  .navbar-custom.is-fixed .nav > li > a:focus {
     color: #0085a1;
   }
   .navbar-custom.is-visible {

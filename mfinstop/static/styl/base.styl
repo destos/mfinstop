@@ -20,13 +20,16 @@ body
     .navbar-brand
         font-weight: 800
 
-    .nav
-        li
-            a
+    .nav.navbar-nav
+        > li
+            > a
                 text-transform: uppercase
                 font-size: 12px
                 font-weight: 800
                 letter-spacing: 1px
+        > .open
+            > a
+                background: $white-faded
 
 
     @media only screen and (min-width: 768px)
@@ -40,8 +43,8 @@ body
                 color: $white-faded
 
         .nav
-            li
-                a
+            > li
+                > a
                     color: white
                     padding: 20px
                     &:hover,
@@ -67,8 +70,8 @@ body
                 &:focus
                     color: $brand-primary
             .nav
-                li
-                    a
+                > li
+                    > a
                         color: $gray-dark
                         &:hover,
                         &:focus
