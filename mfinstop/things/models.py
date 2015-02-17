@@ -51,6 +51,10 @@ class Thing(TimeStampedModel):
     def is_negative(self):
         return self.behavior is self.BAD
 
+    @property
+    def is_positive(self):
+        return self.behavior is self.GOOD
+
 
 class UserMotive(TimeStampedModel):
     """
@@ -314,7 +318,11 @@ class UserAction(TimeStampedModel):
         return None
 
     def __unicode__(self):
-        return "{} made a {}".format(self.user, self.content_type)
+        return "{} made a {}".format(self.user.get_full_name(), self.content_type)
+
+    @property
+    def ago(self):
+        return arrow.get(self.created).humanize()
 
 
 def create_user_action(sender, **kwargs):
@@ -328,5 +336,5 @@ def create_user_action(sender, **kwargs):
 
 post_save.connect(create_user_action, sender=Incident)
 post_save.connect(create_user_action, sender=UserMotive)
-# post_save.connect(create_user_action, sender=MotivePeriod)
+post_save.connect(create_user_action, sender=MotivePeriod)
 post_save.connect(create_user_action, sender=Thing)

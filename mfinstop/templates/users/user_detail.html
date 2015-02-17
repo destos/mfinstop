@@ -1,5 +1,7 @@
 {% extends "sub_base.html" %}
 
+{% set display_name = user_details.first_name|default(user_details.username) %}
+
 {% block title %}User: {{ user_details.username }}{% endblock %}
 
 {% block page_header %}
@@ -20,11 +22,94 @@
 
 {% if waffle.flag('show_user_actions') %}
 <h3>What they've been up to:</h3>
-{% for action in user_details.actions.all() %}
-{# check that motive is not private before showing in actions #}
-{{ action }}
-<br>
-{% endfor %}
+{# timeline comes from: http://bootsnipp.com/snippets/featured/timeline-responsive #}
+
+{% macro timeline_incident_item(action, loop=none) %}
+    {% set incident = action.content_object %}
+    {% set motive = incident.motive %}
+    {% set thing = motive.thing %}
+    <li class="timeline-inverted">
+        <div class="timeline-badge {% if thing.is_positive %}success{% else %}danger{% endif %} ">
+            {% if thing.is_positive %}
+                <i class="glyphicon glyphicon-check"></i>
+            {% else %}
+                <i class="glyphicon glyphicon-unchecked"></i>
+            {% endif %}
+        </div>
+        <div class="timeline-panel">
+            <div class="timeline-heading">
+                <h4 class="timeline-title">{{ display_name }} was {{ _('seen') if thing.is_positive else _('caught') }} {{ thing.verb }} {{ thing.name }}</h4>
+                <p>
+                    <small class="text-muted">
+                       <i class="glyphicon glyphicon-time"></i> {{ action.ago }}
+                    </small>
+                </p>
+            </div>
+            {# TODO: add section that shows how many incidents are left for this period. #}
+        </div>
+    </li>
+{% endmacro %}
+
+{% macro timeline_motive_item(action, loop=none) %}
+    {% set motive = action.content_object %}
+    <li>
+        <div class="timeline-badge">
+            <i class="glyphicon glyphicon-check"></i>
+        </div>
+        <div class="timeline-panel">
+            <div class="timeline-heading">
+                <h4 class="timeline-title">{{ display_name }} created a new thing!</h4>
+                <p>
+                    <small class="text-muted">
+                       <i class="glyphicon glyphicon-time"></i> {{ action.ago }}
+                    </small>
+                </p>
+            </div>
+            <div class="timeline-body">
+                <p>They're going to try and {{ motive.thing }}.</p>
+            </div>
+        </div>
+    </li>
+{% endmacro %}
+
+{% macro timeline_period_item(action, loop=none) %}
+    {% set period = action.content_object %}
+    {% set motive = period.motive %}
+    <li>
+        <div class="timeline-badge info">
+            <i class="glyphicon glyphicon-calendar"></i>
+        </div>
+        <div class="timeline-panel">
+            <div class="timeline-heading">
+                <h4 class="timeline-title">{{ display_name }} started a new time period to try and {{ motive.thing }}</h4>
+                <p>
+                    <small class="text-muted">
+                       <i class="glyphicon glyphicon-time"></i> {{ action.ago }}
+                    </small>
+                </p>
+            </div>
+            <div class="timeline-body">
+                <p>{{ display_name }} can is trying to {{ motive.thing }}. And can only do this {{ motive.amount }} times every {{ period.days_total }} days.</p>
+            </div>
+        </div>
+    </li>
+{% endmacro %}
+
+<ul class="timeline">
+    {% for action in get_user_actions() %}
+        {% set type = action.content_type.model %}
+        {% if type == 'incident' %}
+            {{ timeline_incident_item(action, loop) }}
+        {% elif type == 'usermotive' %}
+            {{ timeline_motive_item(action, loop) }}
+        {% elif type == 'motiveperiod' %}
+            {{ timeline_period_item(action, loop) }}
+        {# {% elif type == 'thing' %}
+            {{ timeline_incident_item(action, loop) }} #}
+        {% endif %}
+    {% endfor %}
+</ul>
+
 {% endif %}
 
 </div>

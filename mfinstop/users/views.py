@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
 from django.views.generic import DetailView, RedirectView, UpdateView, ListView
+from django.contrib.contenttypes.models import ContentType
 from braces.views import LoginRequiredMixin
 
 from .forms import UserForm
 from .models import User
+from things.models import Thing
 
 
 class UserDetailView(
@@ -15,6 +17,17 @@ class UserDetailView(
 
     slug_field = "username"
     slug_url_kwarg = "username"
+
+    def get_context_data(self, **kwargs):
+        context = super(UserDetailView, self).get_context_data(**kwargs)
+        context.update({
+            'get_user_actions': self.get_user_actions
+        })
+        return context
+
+    def get_user_actions(self):
+        return self.object.actions.exclude(
+            content_type=ContentType.objects.get_for_model(Thing))
 
 
 class UserRedirectView(
