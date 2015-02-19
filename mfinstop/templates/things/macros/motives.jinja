@@ -3,5 +3,5 @@
 {%- endmacro %}
 
 {% macro period_ends(period) -%}
-    The current period ends in {{ period.days_left }} {{ ngettext('day', ' days', period.days_left) }}
+    The current period ends in {{ period.days_left }} {{ ngettext('day', 'days', period.days_left) }}
 {%- endmacro %}
